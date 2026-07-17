@@ -82,11 +82,18 @@ async function run({ limit = 500 } = {}) {
     // Select on quality_score only. The clusterer overwrites importance_score for
     // recent articles, so a clustered-but-unscored article would still have
     // quality_score = 0 — keying on quality alone ensures curator always reaches it.
+    //
+    // Ordered by id, not ingested_at. id is the bigserial primary key: already
+    // indexed and monotonic with insertion, so it means the same thing here while
+    // letting Postgres walk the index instead of sorting the whole table.
+    // ingested_at has no index — measured against production, it exceeded the 8s
+    // statement timeout (9.5s, HTTP 500) while id returned in 0.34s. That timeout
+    // is why this agent has been failing every run.
     const { data: articles, error } = await db
         .from('articles')
         .select('id, url, url_normalized, title, snippet, image_url, is_state_media, factual_score, tier')
         .eq('quality_score', 0)
-        .order('ingested_at', { ascending: false })
+        .order('id', { ascending: false })
         .limit(limit);
 
     if (error) throw new Error('[curator] fetch failed: ' + error.message);
