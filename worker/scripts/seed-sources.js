@@ -1,12 +1,42 @@
 // Seeds the `sources` table from feeds.json + source-ratings.json.
 // Idempotent: re-runs safely (upserts by feed_url).
 //
+// feeds.json is the source of truth. Rows whose feed_url is no longer in the file
+// are disabled, not deleted — the articles table references sources by id, so
+// deleting would orphan history. Disabling stops the scraper fetching them.
+//
 // Usage: npm run db:seed-sources
+//        npm run db:seed-sources -- --dry-run    # report changes, write nothing
 
 const path = require('path');
 const fs = require('fs');
 const { db } = require('../lib/db');
 const { domainOf } = require('../lib/normalize');
+
+// PostgREST caps any response at 1000 rows. Reading the source list unranged would
+// silently return a subset — and every unread row would then look like an orphan
+// and be disabled. Page explicitly.
+const SELECT_PAGE = 1000;
+const DISABLE_BATCH = 200;
+
+// Ordered by id so page boundaries stay stable between requests.
+async function fetchEnabledSources() {
+    const sources = [];
+    for (let from = 0; ; from += SELECT_PAGE) {
+        const { data, error } = await db
+            .from('sources')
+            .select('id, name, feed_url, country')
+            .eq('enabled', true)
+            .order('id', { ascending: true })
+            .range(from, from + SELECT_PAGE - 1);
+        if (error) {
+            console.error('[seed-sources] source fetch failed:', error.message);
+            process.exit(1);
+        }
+        sources.push(...data);
+        if (data.length < SELECT_PAGE) return sources;
+    }
+}
 
 async function main() {
     const feeds = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/feeds.json'), 'utf8'));
@@ -41,21 +71,62 @@ async function main() {
         };
     });
 
+    const dryRun = process.argv.includes('--dry-run');
+    if (dryRun) console.log('[seed-sources] DRY RUN — no writes');
+
     console.log(`[seed-sources] Upserting ${rows.length} sources...`);
 
-    // Batch upsert
-    const { data, error } = await db
-        .from('sources')
-        .upsert(rows, { onConflict: 'feed_url' })
-        .select('id');
+    if (!dryRun) {
+        const { data, error } = await db
+            .from('sources')
+            .upsert(rows, { onConflict: 'feed_url' })
+            .select('id');
 
-    if (error) {
-        console.error('[seed-sources] FAILED:', error.message);
-        process.exit(1);
+        if (error) {
+            console.error('[seed-sources] FAILED:', error.message);
+            process.exit(1);
+        }
+        console.log(`[seed-sources] ✓ Upserted ${data.length} sources.`);
     }
 
-    console.log(`[seed-sources] ✓ Upserted ${data.length} sources.`);
+    await disableOrphans(rows.map(r => r.feed_url), dryRun);
     process.exit(0);
+}
+
+// Any enabled row whose feed_url is no longer in feeds.json is an orphan. Without
+// this the scraper keeps fetching removed feeds forever: deleting a feed from
+// feeds.json had no effect on what actually got scraped, because the upsert above
+// only ever writes enabled:true and never turns anything off.
+async function disableOrphans(currentUrls, dryRun) {
+    const urlSet = new Set(currentUrls);
+    const enabled = await fetchEnabledSources();
+    const orphans = enabled.filter(s => !urlSet.has(s.feed_url));
+
+    if (!orphans.length) {
+        console.log('[seed-sources] ✓ No orphaned sources.');
+        return;
+    }
+
+    console.log(`[seed-sources] ${orphans.length} orphaned sources (enabled but absent from feeds.json):`);
+    for (const o of orphans) console.log(`    ${o.country || '???'}  ${o.name}`);
+
+    if (dryRun) {
+        console.log('[seed-sources] DRY RUN — would disable the above.');
+        return;
+    }
+
+    for (let i = 0; i < orphans.length; i += DISABLE_BATCH) {
+        const chunk = orphans.slice(i, i + DISABLE_BATCH);
+        const { error } = await db
+            .from('sources')
+            .update({ enabled: false })
+            .in('id', chunk.map(o => o.id));
+        if (error) {
+            console.error('[seed-sources] disable failed:', error.message);
+            process.exit(1);
+        }
+    }
+    console.log(`[seed-sources] ✓ Disabled ${orphans.length} orphaned sources.`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
