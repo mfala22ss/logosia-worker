@@ -33,7 +33,10 @@ async function pipeline() {
     try { await clusterer.run(); }
     catch (e) { console.error('[orch] clusterer failed:', e.message); }
 
-    try { await categorizer.run({ limit: 300 }); }
+    // Categorization is keyword matching — free and fast. The old limit of 300/run
+    // could not keep up with ~20k articles ingested per run, which left the site's
+    // category filters matching almost nothing.
+    try { await categorizer.run({ limit: 5000 }); }
     catch (e) { console.error('[orch] categorizer failed:', e.message); }
 
     try { await translator.run({ limit: 150 }); }

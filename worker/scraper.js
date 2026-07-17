@@ -9,6 +9,7 @@ const { normalizeUrl, extractImage, cleanSnippet, toStr } = require('./lib/norma
 const { dedupCandidates } = require('./lib/dedup');
 const { detectCountry } = require('./lib/geo-tagger');
 const { isEphemeralLive } = require('./lib/ephemeral-live');
+const { categorize } = require('./agents/categorizer');
 
 const parser = new RSSParser({
     customFields: {
@@ -166,6 +167,25 @@ async function scrape() {
     const before = candidates.length;
     const deduped = dedupCandidates(candidates);
     console.log(`[scraper] Dedup: ${before} → ${deduped.length} articles (${before - deduped.length} cross-source dupes dropped)`);
+
+    // Categorize inline. It is a pure keyword function of title + snippet — both
+    // already in memory here — so this costs no extra database round trip.
+    //
+    // It used to run only as a separate hourly agent, which could not keep up: a run
+    // ingests ~20k articles and the agent managed a few thousand before hitting the
+    // statement timeout. 98.9% of the table ended up with categories='{}', so the
+    // site's category filters matched almost nothing. Doing it at insert means new
+    // articles are never uncategorized, and the agent is left to drain the backlog.
+    //
+    // Applied after dedup so dropped duplicates are not categorized for nothing.
+    let categorized = 0;
+    for (const article of deduped) {
+        const cats = categorize(article);
+        article.category   = cats[0] || 'general';
+        article.categories = cats.length ? cats : ['general'];
+        if (cats.length) categorized++;
+    }
+    console.log(`[scraper] Categorized ${categorized}/${deduped.length} inline (${deduped.length - categorized} no keyword match → general)`);
 
     // Batch upsert in chunks — large single upserts timeout on Supabase free tier
     const UPSERT_BATCH = 200;

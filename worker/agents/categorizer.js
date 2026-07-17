@@ -152,38 +152,73 @@ function categorize(article) {
     return scored.map(s => s.cat);
 }
 
+// PostgREST caps any response at 1000 rows, so asking for more is silently truncated.
+const SELECT_PAGE = 1000;
+// Large upserts time out on the Supabase free tier — same batch size the scraper uses.
+const UPSERT_BATCH = 200;
+
+// An article matching no keyword gets ['general'] rather than []. An empty array is
+// '{}' in Postgres, which is the very filter this agent selects on — writing [] back
+// would leave the row eligible forever and the paging loop below would re-read the
+// same rows until it burned its whole budget.
+const NO_MATCH = ['general'];
+
+function toUpdate(article) {
+    const cats = categorize(article);
+    return {
+        id:             article.id,
+        url:            article.url,
+        url_normalized: article.url_normalized,
+        title:          article.title,
+        category:       cats[0] || 'general',
+        categories:     cats.length ? cats : NO_MATCH,
+    };
+}
+
+async function upsertBatched(updates) {
+    for (let i = 0; i < updates.length; i += UPSERT_BATCH) {
+        const chunk = updates.slice(i, i + UPSERT_BATCH);
+        const { error } = await db.from('articles').upsert(chunk, { onConflict: 'id' });
+        if (error) throw new Error('[categorizer] batch upsert failed: ' + error.message);
+    }
+}
+
 // Process articles that haven't been multi-categorized yet (categories = '{}').
-async function run({ limit = 300 } = {}) {
-    const { data: articles, error } = await db
-        .from('articles')
-        .select('id, title, snippet, url, url_normalized')
-        .eq('categories', '{}')
-        .order('ingested_at', { ascending: false })
-        .limit(limit);
+// Newest first: the site only ever filters on recent articles, so fresh rows matter
+// more than the historical backlog. Each pass re-queries the '{}' filter, and rows
+// written by the previous pass drop out of it — that is what advances the loop.
+//
+// Ordered by id, not ingested_at. id is the bigserial primary key, so it is already
+// indexed and monotonic with insertion — Postgres walks the index backwards and stops
+// at the limit. Ordering by ingested_at has no usable index and forces a sort over
+// half a million rows, which exceeds the 8s statement timeout (measured: 8.8s vs 0.97s).
+async function run({ limit = 5000 } = {}) {
+    let processed = 0;
+    let multiCategory = 0;
 
-    if (error) throw new Error('[categorizer] fetch failed: ' + error.message);
-    if (!articles?.length) return { processed: 0 };
+    while (processed < limit) {
+        const pageSize = Math.min(SELECT_PAGE, limit - processed);
+        const { data: articles, error } = await db
+            .from('articles')
+            .select('id, title, snippet, url, url_normalized')
+            .eq('categories', '{}')
+            .order('id', { ascending: false })
+            .limit(pageSize);
 
-    const updates = articles.map(a => {
-        const cats = categorize(a);
-        return {
-            id:              a.id,
-            url:             a.url,
-            url_normalized:  a.url_normalized,
-            title:           a.title,
-            category:        cats[0] || 'general',
-            categories:      cats,
-        };
-    });
+        if (error) throw new Error('[categorizer] fetch failed: ' + error.message);
+        if (!articles?.length) break;
 
-    const { error: upsertErr } = await db
-        .from('articles')
-        .upsert(updates, { onConflict: 'id' });
+        const updates = articles.map(toUpdate);
+        await upsertBatched(updates);
 
-    if (upsertErr) throw new Error('[categorizer] batch upsert failed: ' + upsertErr.message);
+        processed     += updates.length;
+        multiCategory += updates.filter(u => u.categories.length > 1).length;
 
-    console.log(`[categorizer] ✓ Categorized ${updates.length} articles (${updates.filter(u => u.categories.length > 1).length} multi-category).`);
-    return { processed: updates.length };
+        if (articles.length < pageSize) break;
+    }
+
+    console.log(`[categorizer] ✓ Categorized ${processed} articles (${multiCategory} multi-category).`);
+    return { processed };
 }
 
 module.exports = { run, categorize };
