@@ -1,0 +1,168 @@
+// RSS scraper — fetches all enabled sources in parallel batches, inserts new
+// articles into Postgres. Mirrors the headless half of the original news-bot.
+//
+// Returns: { fetched, inserted, skipped, failed }
+
+const RSSParser = require('rss-parser');
+const { db } = require('./lib/db');
+const { normalizeUrl, extractImage, cleanSnippet, toStr } = require('./lib/normalize');
+const { dedupCandidates } = require('./lib/dedup');
+const { detectCountry } = require('./lib/geo-tagger');
+const { isEphemeralLive } = require('./lib/ephemeral-live');
+
+const parser = new RSSParser({
+    customFields: {
+        item: [
+            'content:encoded',
+            'description',
+            'pubDate',
+            ['media:content', 'mediaContent'],
+            ['media:thumbnail', 'mediaThumbnail'],
+            ['enclosure', 'enclosure'],
+        ],
+    },
+    timeout: 12000,
+});
+
+const FETCH_CONCURRENCY = 8;
+
+const PREMIUM_NAMES = ["Reuters", "Associated Press", "Bloomberg", "Financial Times", "The Economist", "New York Times", "Politico"];
+
+function safeDate(str) {
+    if (!str) return new Date().toISOString();
+    const t = new Date(str).getTime();
+    return isNaN(t) ? new Date().toISOString() : new Date(t).toISOString();
+}
+const FRESHNESS_HOURS = 168;  // 7 days — fills out country diversity
+
+function isFresh(dateStr) {
+    if (!dateStr) return true;
+    const t = new Date(dateStr).getTime();
+    if (isNaN(t)) return true;
+    return (Date.now() - t) < FRESHNESS_HOURS * 3600_000;
+}
+
+async function fetchFeed(source) {
+    try {
+        const parsed = await Promise.race([
+            parser.parseURL(source.feed_url),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('Feed timeout')), 12000)),
+        ]);
+        await db.from('sources').update({
+            last_fetched_at: new Date().toISOString(),
+            last_status:     'ok',
+            last_error:      null,
+        }).eq('id', source.id);
+        return { source, items: parsed.items || [] };
+    } catch (e) {
+        const status = e.message.includes('timeout') ? 'timeout'
+                     : e.message.includes('Status') ? 'http_error'
+                     : 'parse_error';
+        await db.from('sources').update({
+            last_fetched_at: new Date().toISOString(),
+            last_status:     status,
+            last_error:      e.message.slice(0, 240),
+        }).eq('id', source.id);
+        return null;
+    }
+}
+
+async function scrape() {
+    let sourceQuery = db.from('sources').select('*').eq('enabled', true);
+    if (process.env.PREMIUM_ONLY === '1') {
+        // "Associated Press" is matched exactly so it does not also pull in
+        // "Associated Press of Pakistan" or "Australian Associated Press".
+        const premiumExact = new Set(['Associated Press']);
+        sourceQuery = sourceQuery.or(
+            PREMIUM_NAMES.map(n => (premiumExact.has(n) ? `name.eq.${n}` : `name.ilike.%${n}%`)).join(','),
+        );
+        console.log('[scraper] PREMIUM_ONLY mode — filtering to premium sources');
+    }
+    const { data: sources, error } = await sourceQuery;
+
+    if (error) throw new Error('[scraper] sources fetch failed: ' + error.message);
+    if (!sources?.length) {
+        console.warn('[scraper] No enabled sources — run `npm run db:seed-sources` first.');
+        return { fetched: 0, inserted: 0, skipped: 0, failed: 0 };
+    }
+
+    console.log(`[scraper] Fetching ${sources.length} sources in batches of ${FETCH_CONCURRENCY}...`);
+
+    const fetched = [];
+    let failed = 0;
+    for (let i = 0; i < sources.length; i += FETCH_CONCURRENCY) {
+        const batch = sources.slice(i, i + FETCH_CONCURRENCY);
+        const results = await Promise.all(batch.map(fetchFeed));
+        for (const r of results) {
+            if (r) fetched.push(r);
+            else failed++;
+        }
+    }
+    console.log(`[scraper] ✓ Fetched ${fetched.length}/${sources.length} (${failed} failed)`);
+
+    // Flatten + filter + dedupe before bulk insert
+    const candidates = [];
+    for (const { source, items } of fetched) {
+        for (const item of items) {
+            const url = item.link;
+            if (!url) continue;
+            if (!/^https?:\/\//i.test(url)) continue;
+            if (!isFresh(item.isoDate || item.pubDate)) continue;
+            if (isEphemeralLive(item.title)) continue;
+
+            const rawContent = toStr(item['content:encoded']) || toStr(item.content) || item.contentSnippet || toStr(item.description) || '';
+            candidates.push({
+                source_id:          source.id,
+                url,
+                url_normalized:     normalizeUrl(url),
+                title:              (item.title || 'Untitled').slice(0, 500),
+                title_original:     (item.title || 'Untitled').slice(0, 500),
+                snippet:            cleanSnippet(rawContent),
+                image_url:          extractImage(item, rawContent),
+                published_at:       safeDate(item.isoDate || item.pubDate),
+                country:            detectCountry(item.title, source.country),
+                language:           source.language,
+                bias_score:         source.bias,
+                factual_score:      source.factual,
+                tier:               source.tier || 2,
+                is_state_media:     source.is_state_media,
+                verification_status: source.is_state_media ? 'state_media' : 'single_source',
+            });
+        }
+    }
+
+    if (candidates.length === 0) {
+        console.log('[scraper] No fresh items found.');
+        return { fetched: fetched.length, inserted: 0, skipped: 0, failed };
+    }
+
+    // In-memory semantic dedup: collapses same-story articles across sources.
+    // URL dedup still happens at DB level via onConflict: 'url'.
+    const before = candidates.length;
+    const deduped = dedupCandidates(candidates);
+    console.log(`[scraper] Dedup: ${before} → ${deduped.length} articles (${before - deduped.length} cross-source dupes dropped)`);
+
+    // Batch upsert in chunks — large single upserts timeout on Supabase free tier
+    const UPSERT_BATCH = 200;
+    let insertedCount = 0;
+    console.log(`[scraper] Upserting ${deduped.length} articles in batches of ${UPSERT_BATCH}...`);
+    for (let i = 0; i < deduped.length; i += UPSERT_BATCH) {
+        const chunk = deduped.slice(i, i + UPSERT_BATCH);
+        const { data: ins, error: insErr } = await db
+            .from('articles')
+            .upsert(chunk, { onConflict: 'url', ignoreDuplicates: true })
+            .select('id');
+        if (insErr) throw new Error('[scraper] upsert failed: ' + insErr.message);
+        insertedCount += ins?.length || 0;
+    }
+    console.log(`[scraper] ✓ Inserted ${insertedCount} new articles (${deduped.length - insertedCount} duplicates).`);
+
+    return {
+        fetched: fetched.length,
+        inserted: insertedCount,
+        skipped: candidates.length - insertedCount,
+        failed,
+    };
+}
+
+module.exports = { scrape };

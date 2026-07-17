@@ -1,0 +1,1640 @@
+{
+  "_meta": {
+    "framework": "MBFC (Media Bias/Fact Check) aligned methodology",
+    "biasScale": "-10 (Extreme Left) to +10 (Extreme Right), 99 = State Media",
+    "factualScale": "0 (Very Low) to 10 (Very High)",
+    "credibilityScale": "0-100 composite of factual reporting, source type, and track record",
+    "lastUpdated": "2026-04-17",
+    "version": "1.0.0"
+  },
+  "reuters.com": {
+    "name": "Reuters",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 10,
+    "factualLabel": "Very High",
+    "type": "wire_service",
+    "credibilityScore": 95,
+    "country": "GBR"
+  },
+  "reutersagency.com": {
+    "name": "Reuters",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 10,
+    "factualLabel": "Very High",
+    "type": "wire_service",
+    "credibilityScore": 95,
+    "country": "GBR"
+  },
+  "apnews.com": {
+    "name": "Associated Press",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 10,
+    "factualLabel": "Very High",
+    "type": "wire_service",
+    "credibilityScore": 95,
+    "country": "USA"
+  },
+  "france24.com": {
+    "name": "France 24 / AFP",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 90,
+    "country": "FRA"
+  },
+  "bbc.com": {
+    "name": "BBC",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 90,
+    "country": "GBR"
+  },
+  "bbc.co.uk": {
+    "name": "BBC",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 90,
+    "country": "GBR"
+  },
+  "bbci.co.uk": {
+    "name": "BBC",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 90,
+    "country": "GBR"
+  },
+  "pbs.org": {
+    "name": "PBS NewsHour",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 88,
+    "country": "USA"
+  },
+  "abc.net.au": {
+    "name": "ABC Australia",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 88,
+    "country": "AUS"
+  },
+  "dw.com": {
+    "name": "Deutsche Welle",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 85,
+    "country": "DEU"
+  },
+  "rte.ie": {
+    "name": "RTÉ Ireland",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 82,
+    "country": "IRL"
+  },
+  "cbc.ca": {
+    "name": "CBC Canada",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 80,
+    "country": "CAN"
+  },
+  "channelnewsasia.com": {
+    "name": "CNA Singapore",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 80,
+    "country": "SGP"
+  },
+  "euronews.com": {
+    "name": "EuroNews",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 78,
+    "country": "FRA"
+  },
+  "yna.co.kr": {
+    "name": "Yonhap Korea",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "wire_service",
+    "credibilityScore": 80,
+    "country": "KOR"
+  },
+  "ft.com": {
+    "name": "Financial Times",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "newspaper",
+    "credibilityScore": 90,
+    "country": "GBR"
+  },
+  "economist.com": {
+    "name": "The Economist",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "newspaper",
+    "credibilityScore": 88,
+    "country": "GBR"
+  },
+  "bloomberg.com": {
+    "name": "Bloomberg",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "newspaper",
+    "credibilityScore": 85,
+    "country": "USA"
+  },
+  "npr.org": {
+    "name": "NPR",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 85,
+    "country": "USA"
+  },
+  "nytimes.com": {
+    "name": "New York Times",
+    "bias": -4,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "washingtonpost.com": {
+    "name": "Washington Post",
+    "bias": -4,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "wsj.com": {
+    "name": "Wall Street Journal",
+    "bias": 3,
+    "biasLabel": "Right-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 80,
+    "country": "USA"
+  },
+  "theguardian.com": {
+    "name": "The Guardian",
+    "bias": -5,
+    "biasLabel": "Left",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 72,
+    "country": "GBR"
+  },
+  "cnn.com": {
+    "name": "CNN",
+    "bias": -5,
+    "biasLabel": "Left",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "broadcaster",
+    "credibilityScore": 55,
+    "country": "USA"
+  },
+  "foxnews.com": {
+    "name": "Fox News",
+    "bias": 7,
+    "biasLabel": "Right",
+    "factual": 4,
+    "factualLabel": "Mixed",
+    "type": "broadcaster",
+    "credibilityScore": 40,
+    "country": "USA"
+  },
+  "telegraph.co.uk": {
+    "name": "The Telegraph",
+    "bias": 4,
+    "biasLabel": "Right-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "GBR"
+  },
+  "thetimes.com": {
+    "name": "The Times UK",
+    "bias": 3,
+    "biasLabel": "Right-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "GBR"
+  },
+  "spiegel.de": {
+    "name": "Der Spiegel",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 75,
+    "country": "DEU"
+  },
+  "smh.com.au": {
+    "name": "Sydney Morning Herald",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "AUS"
+  },
+  "theage.com.au": {
+    "name": "The Age",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "AUS"
+  },
+  "globeandmail.com": {
+    "name": "Globe and Mail",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 80,
+    "country": "CAN"
+  },
+  "straitstimes.com": {
+    "name": "The Straits Times",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 72,
+    "country": "SGP"
+  },
+  "aljazeera.com": {
+    "name": "Al Jazeera",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 65,
+    "country": "QAT"
+  },
+  "haaretz.com": {
+    "name": "Haaretz",
+    "bias": -5,
+    "biasLabel": "Left",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 72,
+    "country": "ISR"
+  },
+  "jpost.com": {
+    "name": "Jerusalem Post",
+    "bias": 4,
+    "biasLabel": "Right-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 65,
+    "country": "ISR"
+  },
+  "scmp.com": {
+    "name": "South China Morning Post",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 68,
+    "country": "HKG"
+  },
+  "politico.eu": {
+    "name": "Politico EU",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 78,
+    "country": "BEL"
+  },
+  "theintercept.com": {
+    "name": "The Intercept",
+    "bias": -7,
+    "biasLabel": "Left",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 62,
+    "country": "USA"
+  },
+  "irishtimes.com": {
+    "name": "Irish Times",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 80,
+    "country": "IRL"
+  },
+  "thehindu.com": {
+    "name": "The Hindu",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "IND"
+  },
+  "indiatimes.com": {
+    "name": "Times of India",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "newspaper",
+    "credibilityScore": 55,
+    "country": "IND"
+  },
+  "rappler.com": {
+    "name": "Rappler",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 75,
+    "country": "PHL"
+  },
+  "dawn.com": {
+    "name": "Dawn",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "PAK"
+  },
+  "nzherald.co.nz": {
+    "name": "NZ Herald",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 72,
+    "country": "NZL"
+  },
+  "japantimes.co.jp": {
+    "name": "The Japan Times",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "JPN"
+  },
+  "koreaherald.com": {
+    "name": "Korea Herald",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 72,
+    "country": "KOR"
+  },
+  "nikkei.com": {
+    "name": "Nikkei Asia",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 80,
+    "country": "JPN"
+  },
+  "buenosairesherald.com": {
+    "name": "Buenos Aires Herald",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 68,
+    "country": "ARG"
+  },
+  "dailymaverick.co.za": {
+    "name": "Daily Maverick",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 75,
+    "country": "ZAF"
+  },
+  "mg.co.za": {
+    "name": "Mail & Guardian",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "ZAF"
+  },
+  "coindesk.com": {
+    "name": "CoinDesk",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 82,
+    "country": "USA"
+  },
+  "defensenews.com": {
+    "name": "Defense News",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 75,
+    "country": "USA"
+  },
+  "warontherocks.com": {
+    "name": "War on the Rocks",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 80,
+    "country": "USA"
+  },
+  "breakingdefense.com": {
+    "name": "Breaking Defense",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "lawfaremedia.org": {
+    "name": "Lawfare",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "digital_native",
+    "credibilityScore": 88,
+    "country": "USA"
+  },
+  "justsecurity.org": {
+    "name": "Just Security",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "digital_native",
+    "credibilityScore": 85,
+    "country": "USA"
+  },
+  "thediplomat.com": {
+    "name": "The Diplomat",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "thecipherbrief.com": {
+    "name": "The Cipher Brief",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 80,
+    "country": "USA"
+  },
+  "africanews.com": {
+    "name": "Africa News",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 68,
+    "country": "COG"
+  },
+  "tass.com": {
+    "name": "TASS",
+    "bias": 99,
+    "biasLabel": "State Media",
+    "factual": 2,
+    "factualLabel": "Low",
+    "type": "state_media",
+    "credibilityScore": 10,
+    "country": "RUS"
+  },
+  "rt.com": {
+    "name": "RT",
+    "bias": 99,
+    "biasLabel": "State Media",
+    "factual": 1,
+    "factualLabel": "Very Low",
+    "type": "state_media",
+    "credibilityScore": 5,
+    "country": "RUS"
+  },
+  "xinhuanet.com": {
+    "name": "Xinhua",
+    "bias": 99,
+    "biasLabel": "State Media",
+    "factual": 2,
+    "factualLabel": "Low",
+    "type": "state_media",
+    "credibilityScore": 10,
+    "country": "CHN"
+  },
+  "tehrantimes.com": {
+    "name": "Tehran Times",
+    "bias": 99,
+    "biasLabel": "State Media",
+    "factual": 1,
+    "factualLabel": "Very Low",
+    "type": "state_media",
+    "credibilityScore": 5,
+    "country": "IRN"
+  },
+  "aa.com.tr": {
+    "name": "Anadolu Agency",
+    "bias": 99,
+    "biasLabel": "State Media",
+    "factual": 3,
+    "factualLabel": "Mixed",
+    "type": "state_media",
+    "credibilityScore": 15,
+    "country": "TUR"
+  },
+  "ukrinform.net": {
+    "name": "Ukrinform",
+    "bias": 99,
+    "biasLabel": "State Media",
+    "factual": 4,
+    "factualLabel": "Mixed",
+    "type": "state_media",
+    "credibilityScore": 25,
+    "country": "UKR"
+  },
+  "tvp.info": {
+    "name": "TVP Poland",
+    "bias": 4,
+    "biasLabel": "Right-Center",
+    "factual": 5,
+    "factualLabel": "Mostly Factual",
+    "type": "broadcaster",
+    "credibilityScore": 45,
+    "country": "POL"
+  },
+  "svd.se": {
+    "name": "SvD Sweden",
+    "bias": 2,
+    "biasLabel": "Right-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "SWE"
+  },
+  "nzz.ch": {
+    "name": "NZZ Switzerland",
+    "bias": 2,
+    "biasLabel": "Right-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "newspaper",
+    "credibilityScore": 85,
+    "country": "CHE"
+  },
+  "bellingcat.com": {
+    "name": "Bellingcat",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "osint",
+    "credibilityScore": 88,
+    "country": "NLD"
+  },
+  "rand.org": {
+    "name": "RAND Corporation",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 10,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 92,
+    "country": "USA"
+  },
+  "csis.org": {
+    "name": "CSIS",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 88,
+    "country": "USA"
+  },
+  "chathamhouse.org": {
+    "name": "Chatham House",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 88,
+    "country": "GBR"
+  },
+  "cfr.org": {
+    "name": "Council on Foreign Relations",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 88,
+    "country": "USA"
+  },
+  "foreignaffairs.com": {
+    "name": "Foreign Affairs",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "magazine",
+    "credibilityScore": 90,
+    "country": "USA"
+  },
+  "foreignpolicy.com": {
+    "name": "Foreign Policy",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "magazine",
+    "credibilityScore": 85,
+    "country": "USA"
+  },
+  "brookings.edu": {
+    "name": "Brookings Institution",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 85,
+    "country": "USA"
+  },
+  "carnegieendowment.org": {
+    "name": "Carnegie Endowment",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 88,
+    "country": "USA"
+  },
+  "iiss.org": {
+    "name": "IISS",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 88,
+    "country": "GBR"
+  },
+  "rusi.org": {
+    "name": "RUSI",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 88,
+    "country": "GBR"
+  },
+  "defenseone.com": {
+    "name": "Defense One",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "thebureauinvestigates.com": {
+    "name": "Bureau of Investigative Journalism",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "osint",
+    "credibilityScore": 88,
+    "country": "GBR"
+  },
+  "x.com": {
+    "name": "X (Twitter)",
+    "bias": 0,
+    "biasLabel": "N/A",
+    "factual": 1,
+    "factualLabel": "Very Low",
+    "type": "social",
+    "credibilityScore": 5,
+    "country": "USA"
+  },
+  "twitter.com": {
+    "name": "X (Twitter)",
+    "bias": 0,
+    "biasLabel": "N/A",
+    "factual": 1,
+    "factualLabel": "Very Low",
+    "type": "social",
+    "credibilityScore": 5,
+    "country": "USA"
+  },
+  "rss.app": {
+    "name": "RSS Proxy",
+    "bias": 0,
+    "biasLabel": "N/A",
+    "factual": 0,
+    "factualLabel": "N/A",
+    "type": "proxy",
+    "credibilityScore": 0,
+    "country": "N/A"
+  },
+  "news.google.com": {
+    "name": "Google News Aggregator",
+    "bias": 0,
+    "biasLabel": "N/A",
+    "factual": 0,
+    "factualLabel": "N/A",
+    "type": "aggregator",
+    "credibilityScore": 0,
+    "country": "USA"
+  },
+  "arabnews.com": {
+    "name": "Arab News",
+    "bias": 3,
+    "biasLabel": "Right-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "SAU"
+  },
+  "saudigazette.com.sa": {
+    "name": "Saudi Gazette",
+    "bias": 3,
+    "biasLabel": "Right-Center",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "newspaper",
+    "credibilityScore": 60,
+    "country": "SAU"
+  },
+  "ahram.org.eg": {
+    "name": "Ahram Online",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "newspaper",
+    "credibilityScore": 55,
+    "country": "EGY"
+  },
+  "egyptianstreets.com": {
+    "name": "Egyptian Streets",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "EGY"
+  },
+  "jordantimes.com": {
+    "name": "Jordan Times",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 72,
+    "country": "JOR"
+  },
+  "timesofisrael.com": {
+    "name": "Times of Israel",
+    "bias": 2,
+    "biasLabel": "Right-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 70,
+    "country": "ISR"
+  },
+  "thenationalnews.com": {
+    "name": "The National UAE",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "UAE"
+  },
+  "gulfnews.com": {
+    "name": "Gulf News",
+    "bias": 3,
+    "biasLabel": "Right-Center",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "newspaper",
+    "credibilityScore": 62,
+    "country": "UAE"
+  },
+  "bangkokpost.com": {
+    "name": "Bangkok Post",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "THA"
+  },
+  "thenation.com.ng": {
+    "name": "The Nation Nigeria",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "newspaper",
+    "credibilityScore": 55,
+    "country": "NGA"
+  },
+  "dailynewsegypt.com": {
+    "name": "Daily News Egypt",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "digital_native",
+    "credibilityScore": 58,
+    "country": "EGY"
+  },
+  "clarin.com": {
+    "name": "Clarín Argentina",
+    "bias": -4,
+    "biasLabel": "Left",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "newspaper",
+    "credibilityScore": 55,
+    "country": "ARG"
+  },
+  "infobae.com": {
+    "name": "Infobae",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "digital_native",
+    "credibilityScore": 52,
+    "country": "ARG"
+  },
+  "elpais.com": {
+    "name": "El País",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "ESP"
+  },
+  "valor.globo.com": {
+    "name": "Valor Econômico",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "BRA"
+  },
+  "crisisgroup.org": {
+    "name": "International Crisis Group",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "think_tank",
+    "credibilityScore": 92,
+    "country": "INT"
+  },
+  "cbsnews.com": {
+    "name": "CBS News",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "nbcnews.com": {
+    "name": "NBC News",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "abcnews.go.com": {
+    "name": "ABC News",
+    "bias": -3,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "politico.com": {
+    "name": "Politico",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 75,
+    "country": "USA"
+  },
+  "thehill.com": {
+    "name": "The Hill",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 70,
+    "country": "USA"
+  },
+  "axios.com": {
+    "name": "Axios",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "cnbc.com": {
+    "name": "CNBC",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 78,
+    "country": "USA"
+  },
+  "lemonde.fr": {
+    "name": "Le Monde",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "newspaper",
+    "credibilityScore": 88,
+    "country": "FRA"
+  },
+  "ansa.it": {
+    "name": "ANSA",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "wire_service",
+    "credibilityScore": 80,
+    "country": "ITA"
+  },
+  "tagesschau.de": {
+    "name": "Tagesschau",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "broadcaster",
+    "credibilityScore": 85,
+    "country": "DEU"
+  },
+  "nos.nl": {
+    "name": "NOS Nieuws",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 82,
+    "country": "NLD"
+  },
+  "japantoday.com": {
+    "name": "Japan Today",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 70,
+    "country": "JPN"
+  },
+  "indianexpress.com": {
+    "name": "Indian Express",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 75,
+    "country": "IND"
+  },
+  "ndtv.com": {
+    "name": "NDTV",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 68,
+    "country": "IND"
+  },
+  "iaea.org": {
+    "name": "IAEA",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 10,
+    "factualLabel": "Very High",
+    "type": "intergovernmental",
+    "credibilityScore": 92,
+    "country": "INT"
+  },
+  "who.int": {
+    "name": "WHO",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 9,
+    "factualLabel": "Very High",
+    "type": "intergovernmental",
+    "credibilityScore": 88,
+    "country": "INT"
+  },
+  "techcrunch.com": {
+    "name": "TechCrunch",
+    "bias": -2,
+    "biasLabel": "Left-Center",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 68,
+    "country": "USA"
+  },
+  "cointelegraph.com": {
+    "name": "Cointelegraph",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "digital_native",
+    "credibilityScore": 58,
+    "country": "USA"
+  },
+  "thefirstnews.com": {
+    "name": "The First News",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 68,
+    "country": "POL"
+  },
+  "wbj.pl": {
+    "name": "Warsaw Business Journal",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "POL"
+  },
+  "polskieradio.pl": {
+    "name": "Polish Radio",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 65,
+    "country": "POL"
+  },
+  "notesfrompoland.com": {
+    "name": "Notes from Poland",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 72,
+    "country": "POL"
+  },
+  "radio.cz": {
+    "name": "Radio Prague International",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 78,
+    "country": "CZE"
+  },
+  "praguemorning.cz": {
+    "name": "Prague Morning",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "CZE"
+  },
+  "praguemonitor.com": {
+    "name": "Prague Daily Monitor",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 62,
+    "country": "CZE"
+  },
+  "hungarytoday.hu": {
+    "name": "Hungary Today",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "HUN"
+  },
+  "dailynewshungary.com": {
+    "name": "Daily News Hungary",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "HUN"
+  },
+  "bbj.hu": {
+    "name": "Budapest Business Journal",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 68,
+    "country": "HUN"
+  },
+  "emerging-europe.com": {
+    "name": "Emerging Europe",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 68,
+    "country": "INT"
+  },
+  "romania-insider.com": {
+    "name": "Romania Insider",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 68,
+    "country": "ROU"
+  },
+  "nineoclock.ro": {
+    "name": "Nine O'Clock Romania",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 65,
+    "country": "ROU"
+  },
+  "romaniajournal.ro": {
+    "name": "Romania Journal",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 62,
+    "country": "ROU"
+  },
+  "ekathimerini.com": {
+    "name": "Ekathimerini",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 78,
+    "country": "GRC"
+  },
+  "greekcitytimes.com": {
+    "name": "Greek City Times",
+    "bias": 1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "GRC"
+  },
+  "amna.gr": {
+    "name": "Athens Macedonia News Agency",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "wire_service",
+    "credibilityScore": 70,
+    "country": "GRC"
+  },
+  "protothema.gr": {
+    "name": "Proto Thema",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 65,
+    "country": "GRC"
+  },
+  "spectator.sme.sk": {
+    "name": "Slovak Spectator",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 75,
+    "country": "SVK"
+  },
+  "bratislavaherald.com": {
+    "name": "The Bratislava Herald",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 62,
+    "country": "SVK"
+  },
+  "total-croatia-news.com": {
+    "name": "Total Croatia News",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "HRV"
+  },
+  "croatiaweek.com": {
+    "name": "Croatia Week",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "HRV"
+  },
+  "hrt.hr": {
+    "name": "HRT Croatia",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 68,
+    "country": "HRV"
+  },
+  "n1info.rs": {
+    "name": "N1 Serbia",
+    "bias": -1,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 68,
+    "country": "SRB"
+  },
+  "b92.net": {
+    "name": "B92 Serbia",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "broadcaster",
+    "credibilityScore": 65,
+    "country": "SRB"
+  },
+  "balkaninsight.com": {
+    "name": "Balkan Insight",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 78,
+    "country": "INT"
+  },
+  "novinite.com": {
+    "name": "Novinite",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "BGR"
+  },
+  "sofiaglobe.com": {
+    "name": "Sofia Globe",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "digital_native",
+    "credibilityScore": 65,
+    "country": "BGR"
+  },
+  "bulgariaanalytica.org": {
+    "name": "Bulgaria Analytica",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "think_tank",
+    "credibilityScore": 65,
+    "country": "BGR"
+  },
+  "elcomercio.pe": {
+    "name": "El Comercio Peru",
+    "bias": 1,
+    "biasLabel": "Center-Right",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "PER"
+  },
+  "perureports.com": {
+    "name": "Peru Reports",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "online_news",
+    "credibilityScore": 65,
+    "country": "PER"
+  },
+  "gestion.pe": {
+    "name": "Gestión Peru",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "financial_news",
+    "credibilityScore": 70,
+    "country": "PER"
+  },
+  "elcomercio.com": {
+    "name": "El Comercio Ecuador",
+    "bias": 1,
+    "biasLabel": "Center-Right",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 68,
+    "country": "ECU"
+  },
+  "ecuadortimes.net": {
+    "name": "Ecuador Times",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "online_news",
+    "credibilityScore": 60,
+    "country": "ECU"
+  },
+  "elpais.com.uy": {
+    "name": "El País Uruguay",
+    "bias": 1,
+    "biasLabel": "Center-Right",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "URY"
+  },
+  "montevideo.com.uy": {
+    "name": "Montevideo Portal",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "online_news",
+    "credibilityScore": 60,
+    "country": "URY"
+  },
+  "caracaschronicles.com": {
+    "name": "Caracas Chronicles",
+    "bias": -1,
+    "biasLabel": "Center-Left",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "online_news",
+    "credibilityScore": 68,
+    "country": "VEN"
+  },
+  "armando.info": {
+    "name": "Armando Info",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "investigative",
+    "credibilityScore": 75,
+    "country": "VEN"
+  },
+  "lostiempos.com": {
+    "name": "Los Tiempos Bolivia",
+    "bias": 1,
+    "biasLabel": "Center-Right",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 68,
+    "country": "BOL"
+  },
+  "prensa.com": {
+    "name": "La Prensa Panama",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 70,
+    "country": "PAN"
+  },
+  "nacion.com": {
+    "name": "La Nación Costa Rica",
+    "bias": 1,
+    "biasLabel": "Center-Right",
+    "factual": 8,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 75,
+    "country": "CRI"
+  },
+  "ticotimes.net": {
+    "name": "The Tico Times",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "online_news",
+    "credibilityScore": 68,
+    "country": "CRI"
+  },
+  "listindiario.com": {
+    "name": "Listín Diario",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 7,
+    "factualLabel": "High",
+    "type": "newspaper",
+    "credibilityScore": 68,
+    "country": "DOM"
+  },
+  "dr1.com": {
+    "name": "DR1 News",
+    "bias": 0,
+    "biasLabel": "Least Biased",
+    "factual": 6,
+    "factualLabel": "Mostly Factual",
+    "type": "online_news",
+    "credibilityScore": 60,
+    "country": "DOM"
+  }
+}

@@ -1,0 +1,44 @@
+name: News Worker
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # every hour
+  workflow_dispatch:         # manual trigger from GitHub UI
+
+concurrency:
+  group: news-worker
+  cancel-in-progress: false  # queue, never cancel a running job
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # Cache the ~110MB embedding model so the clusterer doesn't re-download hourly.
+      - name: Cache embedding model
+        uses: actions/cache@v4
+        with:
+          path: .cache/transformers
+          key: transformers-paraphrase-multilingual-MiniLM-L12-v2
+
+      - name: Run worker
+        run: npm run worker:once
+        env:
+          HF_CACHE_DIR: .cache/transformers
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GROQ_KEY: ${{ secrets.GROQ_KEY }}
+          GROQ_KEY_2: ${{ secrets.GROQ_KEY_2 }}
+          GROQ_KEY_3: ${{ secrets.GROQ_KEY_3 }}
+          GROQ_MODEL: ${{ secrets.GROQ_MODEL }}
