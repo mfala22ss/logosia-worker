@@ -26,6 +26,10 @@ const parser = new RSSParser({
 
 const FETCH_CONCURRENCY = 8;
 
+// PostgREST caps any single response at 1000 rows, so an unranged select silently
+// truncates the source list rather than erroring. Page through explicitly.
+const SOURCE_PAGE_SIZE = 1000;
+
 const PREMIUM_NAMES = ["Reuters", "Associated Press", "Bloomberg", "Financial Times", "The Economist", "New York Times", "Politico"];
 
 function safeDate(str) {
@@ -67,20 +71,41 @@ async function fetchFeed(source) {
     }
 }
 
-async function scrape() {
-    let sourceQuery = db.from('sources').select('*').eq('enabled', true);
-    if (process.env.PREMIUM_ONLY === '1') {
-        // "Associated Press" is matched exactly so it does not also pull in
-        // "Associated Press of Pakistan" or "Australian Associated Press".
-        const premiumExact = new Set(['Associated Press']);
-        sourceQuery = sourceQuery.or(
-            PREMIUM_NAMES.map(n => (premiumExact.has(n) ? `name.eq.${n}` : `name.ilike.%${n}%`)).join(','),
-        );
-        console.log('[scraper] PREMIUM_ONLY mode — filtering to premium sources');
-    }
-    const { data: sources, error } = await sourceQuery;
+function applyPremiumFilter(query) {
+    // "Associated Press" is matched exactly so it does not also pull in
+    // "Associated Press of Pakistan" or "Australian Associated Press".
+    const premiumExact = new Set(['Associated Press']);
+    return query.or(
+        PREMIUM_NAMES.map(n => (premiumExact.has(n) ? `name.eq.${n}` : `name.ilike.%${n}%`)).join(','),
+    );
+}
 
-    if (error) throw new Error('[scraper] sources fetch failed: ' + error.message);
+// Reads every enabled source, paging past the 1000-row response cap.
+// Ordered by id so page boundaries stay stable across requests.
+async function fetchEnabledSources() {
+    const premiumOnly = process.env.PREMIUM_ONLY === '1';
+    if (premiumOnly) console.log('[scraper] PREMIUM_ONLY mode — filtering to premium sources');
+
+    const sources = [];
+    for (let from = 0; ; from += SOURCE_PAGE_SIZE) {
+        let query = db.from('sources')
+            .select('*')
+            .eq('enabled', true)
+            .order('id', { ascending: true })
+            .range(from, from + SOURCE_PAGE_SIZE - 1);
+        if (premiumOnly) query = applyPremiumFilter(query);
+
+        const { data, error } = await query;
+        if (error) throw new Error('[scraper] sources fetch failed: ' + error.message);
+
+        sources.push(...data);
+        if (data.length < SOURCE_PAGE_SIZE) return sources;
+    }
+}
+
+async function scrape() {
+    const sources = await fetchEnabledSources();
+
     if (!sources?.length) {
         console.warn('[scraper] No enabled sources — run `npm run db:seed-sources` first.');
         return { fetched: 0, inserted: 0, skipped: 0, failed: 0 };
