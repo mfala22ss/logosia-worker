@@ -19,6 +19,36 @@ const { domainOf } = require('../lib/normalize');
 const SELECT_PAGE = 1000;
 const DISABLE_BATCH = 200;
 
+// Sources shown under the ★ Premium tab. Exact names — never substring matching.
+// Matching on the name pulled in outlets that merely share a word: "Politico Romania
+// (Spotmedia)" is spotmedia.ro, "Business & Financial Times Ghana" is unrelated to
+// the FT, and "Associated Press of Pakistan" is a different organisation. Matching on
+// the domain does not work either, because Reuters, AP and Politico Romania all sit
+// on news.google.com — those feeds are Google News site: searches.
+//
+// This list is the source of truth for the is_premium column. The equivalent SQL in
+// db/migrations/20260728_is_premium.sql only backfills an already-populated table;
+// on a fresh database the seeder is what sets the flag.
+const PREMIUM_SOURCE_NAMES = new Set([
+    // Reuters and AP both discontinued public RSS (verified 2026-07-28:
+    // feeds.reuters.com no longer resolves, reutersagency.com/feed and
+    // apnews.com/hub/ap-top-news.rss both 404). These are Google News feeds
+    // restricted with site:reuters.com / site:apnews.com, so the articles are
+    // genuinely theirs even though the link goes via a Google redirect.
+    'Reuters World', 'Reuters Business', 'Reuters Canada',
+    'Reuters Africa', 'Reuters Health', 'Reuters Technology',
+    'Associated Press',
+    // Official publisher feeds.
+    'Bloomberg', 'Bloomberg Technology',
+    'Financial Times', 'Financial Times Markets',
+    'New York Times',
+    'Politico', 'Politico EU', 'Politico EU Technology',
+    'The Economist', 'The Economist Finance', 'The Economist Leaders',
+    'The Economist Briefing', 'The Economist Britain', 'The Economist Europe',
+    'The Economist Asia', 'The Economist Business', 'The Economist Science',
+    'The Economist World This Week',
+]);
+
 // Ordered by id so page boundaries stay stable between requests.
 async function fetchEnabledSources() {
     const sources = [];
@@ -68,6 +98,7 @@ async function main() {
             intel_source:   f.intelSource === true,
             tier:           f.tier ?? 2,
             enabled:        true,
+            is_premium:     PREMIUM_SOURCE_NAMES.has(f.name),
         };
     });
 

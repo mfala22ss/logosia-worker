@@ -2737,48 +2737,6 @@
     ]
   },
   {
-    "name": "Reuters Business (Direct)",
-    "url": "https://feeds.reuters.com/reuters/businessNews",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Reuters Technology (Direct)",
-    "url": "https://feeds.reuters.com/reuters/technologyNews",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "technology",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Reuters Health (Direct)",
-    "url": "https://feeds.reuters.com/reuters/healthNews",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "health"
-    ]
-  },
-  {
     "name": "UN News",
     "url": "https://news.un.org/feed/subscribe/en/news/all/rss.xml",
     "origin": "[INT]",

@@ -72,13 +72,15 @@ async function fetchFeed(source) {
     }
 }
 
+// Premium membership is a column on sources, not a name match. Matching on the
+// name pulled in outlets that merely share a word — "Politico Romania (Spotmedia)"
+// is spotmedia.ro, "Business & Financial Times Ghana" is unrelated to the FT, and
+// "Associated Press of Pakistan" is a different organisation. Matching on `domain`
+// does not work either: Reuters, AP and Politico Romania all sit on news.google.com,
+// because those feeds are Google News site: searches. The flag is set by
+// db/migrations/20260728_is_premium.sql in the site repo.
 function applyPremiumFilter(query) {
-    // "Associated Press" is matched exactly so it does not also pull in
-    // "Associated Press of Pakistan" or "Australian Associated Press".
-    const premiumExact = new Set(['Associated Press']);
-    return query.or(
-        PREMIUM_NAMES.map(n => (premiumExact.has(n) ? `name.eq.${n}` : `name.ilike.%${n}%`)).join(','),
-    );
+    return query.eq('is_premium', true);
 }
 
 // Reads every enabled source, paging past the 1000-row response cap.
