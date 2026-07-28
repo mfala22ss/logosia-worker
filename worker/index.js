@@ -16,42 +16,58 @@ const summarizer       = require('./agents/summarizer');
 const INTERVAL_MIN = parseInt(process.env.SCRAPE_INTERVAL_MIN || '30', 10);
 const ONCE         = process.argv.includes('--once');
 
-async function pipeline() {
-    const t0 = Date.now();
-    console.log(`\n[orch] ===== Run starting @ ${new Date().toISOString()} =====`);
-
-    try {
-        const scraped = await scrape();
-        console.log(`[orch] scrape: ${JSON.stringify(scraped)}`);
-    } catch (e) { console.error('[orch] scrape failed:', e.message); }
-
-    try { await curator.run({ limit: 500 }); }
-    catch (e) { console.error('[orch] curator failed:', e.message); }
+// Stages run in order; each is isolated so one failure does not abort the rest.
+const STAGES = [
+    { name: 'scrape',  run: () => scrape() },
+    { name: 'curator', run: () => curator.run({ limit: 500 }) },
 
     // Clusterer refines importance_score for the recent window using multi-source
     // corroboration — must run after curator (which sets the baseline + quality).
-    try { await clusterer.run(); }
-    catch (e) { console.error('[orch] clusterer failed:', e.message); }
+    { name: 'clusterer', run: () => clusterer.run() },
 
     // Categorization is keyword matching — free and fast. The old limit of 300/run
     // could not keep up with ~20k articles ingested per run, which left the site's
     // category filters matching almost nothing.
-    try { await categorizer.run({ limit: 5000 }); }
-    catch (e) { console.error('[orch] categorizer failed:', e.message); }
+    { name: 'categorizer', run: () => categorizer.run({ limit: 5000 }) },
 
-    try { await translator.run({ limit: 150 }); }
-    catch (e) { console.error('[orch] translator failed:', e.message); }
+    { name: 'translator', run: () => translator.run({ limit: 150 }) },
+    { name: 'summarizer', run: () => summarizer.run({ limit: 20 }) },
+];
 
-    try { await summarizer.run({ limit: 20 }); }
-    catch (e) { console.error('[orch] summarizer failed:', e.message); }
+// Returns { total, failed } so the caller can decide the exit code.
+async function pipeline() {
+    const t0 = Date.now();
+    console.log(`\n[orch] ===== Run starting @ ${new Date().toISOString()} =====`);
+
+    let failed = 0;
+    for (const stage of STAGES) {
+        try {
+            const result = await stage.run();
+            if (result !== undefined) console.log(`[orch] ${stage.name}: ${JSON.stringify(result)}`);
+        } catch (e) {
+            failed++;
+            console.error(`[orch] ${stage.name} failed:`, e.message);
+        }
+    }
 
     const dur = ((Date.now() - t0) / 1000).toFixed(1);
-    console.log(`[orch] ===== Run finished in ${dur}s =====\n`);
+    console.log(`[orch] ===== Run finished in ${dur}s — ${STAGES.length - failed}/${STAGES.length} stages ok =====\n`);
+    return { total: STAGES.length, failed };
 }
 
 async function main() {
-    await pipeline();
-    if (ONCE) { process.exit(0); }
+    const { total, failed } = await pipeline();
+
+    if (ONCE) {
+        // A run where every stage failed did no work at all — in practice an upstream
+        // outage (database unreachable). Exit non-zero so CI reports it instead of
+        // showing a green run that ingested nothing.
+        if (failed === total) {
+            console.error(`[orch] all ${total} stages failed — exiting 1`);
+            process.exit(1);
+        }
+        process.exit(0);
+    }
 
     console.log(`[orch] Looping every ${INTERVAL_MIN} min. Ctrl+C to stop.`);
     setInterval(pipeline, INTERVAL_MIN * 60_000);
