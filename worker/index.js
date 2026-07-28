@@ -7,6 +7,7 @@
 require('dotenv').config({ path: '.env.local' });
 
 const { scrape }       = require('./scraper');
+const retainer         = require('./agents/retainer');
 const curator          = require('./agents/curator');
 const clusterer        = require('./agents/clusterer');
 const translator       = require('./agents/translator');
@@ -18,6 +19,11 @@ const ONCE         = process.argv.includes('--once');
 
 // Stages run in order; each is isolated so one failure does not abort the rest.
 const STAGES = [
+    // Retention runs first so the volume has headroom before the scrape inserts.
+    // Running it last would mean every run peaks at the pre-cleanup size, which is
+    // what filled the 500MB free-tier disk on 2026-07-20 and took the site down.
+    { name: 'retainer', run: () => retainer.run() },
+
     { name: 'scrape',  run: () => scrape() },
     { name: 'curator', run: () => curator.run({ limit: 500 }) },
 
