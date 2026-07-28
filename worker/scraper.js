@@ -9,6 +9,7 @@ const { normalizeUrl, extractImage, cleanSnippet, toStr } = require('./lib/norma
 const { dedupCandidates } = require('./lib/dedup');
 const { detectCountry } = require('./lib/geo-tagger');
 const { isEphemeralLive } = require('./lib/ephemeral-live');
+const { applyOutcomes } = require('./lib/source-health');
 const { categorize } = require('./agents/categorizer');
 
 const parser = new RSSParser({
@@ -47,28 +48,23 @@ function isFresh(dateStr) {
     return (Date.now() - t) < FRESHNESS_HOURS * 3600_000;
 }
 
+// Returns an outcome, and writes nothing. Status bookkeeping moved to
+// worker/lib/source-health.js so the whole run's outcomes can be judged together:
+// a per-feed write cannot tell "this feed is dead" from "the network is down", and
+// that distinction is the only thing standing between auto-disable and wiping the
+// entire source list during a transient outage.
 async function fetchFeed(source) {
     try {
         const parsed = await Promise.race([
             parser.parseURL(source.feed_url),
             new Promise((_, rej) => setTimeout(() => rej(new Error('Feed timeout')), 12000)),
         ]);
-        await db.from('sources').update({
-            last_fetched_at: new Date().toISOString(),
-            last_status:     'ok',
-            last_error:      null,
-        }).eq('id', source.id);
-        return { source, items: parsed.items || [] };
+        return { source, ok: true, items: parsed.items || [] };
     } catch (e) {
         const status = e.message.includes('timeout') ? 'timeout'
                      : e.message.includes('Status') ? 'http_error'
                      : 'parse_error';
-        await db.from('sources').update({
-            last_fetched_at: new Date().toISOString(),
-            last_status:     status,
-            last_error:      e.message.slice(0, 240),
-        }).eq('id', source.id);
-        return null;
+        return { source, ok: false, status, error: e.message };
     }
 }
 
@@ -116,17 +112,26 @@ async function scrape() {
 
     console.log(`[scraper] Fetching ${sources.length} sources in batches of ${FETCH_CONCURRENCY}...`);
 
-    const fetched = [];
-    let failed = 0;
+    const outcomes = [];
     for (let i = 0; i < sources.length; i += FETCH_CONCURRENCY) {
         const batch = sources.slice(i, i + FETCH_CONCURRENCY);
-        const results = await Promise.all(batch.map(fetchFeed));
-        for (const r of results) {
-            if (r) fetched.push(r);
-            else failed++;
-        }
+        outcomes.push(...await Promise.all(batch.map(fetchFeed)));
     }
+
+    const fetched = outcomes.filter(o => o.ok);
+    const failed  = outcomes.length - fetched.length;
     console.log(`[scraper] ✓ Fetched ${fetched.length}/${sources.length} (${failed} failed)`);
+
+    // Health bookkeeping is applied to the whole run at once, and is non-fatal:
+    // a scrape that fetched articles must still insert them even if the
+    // bookkeeping write fails. Losing a counter update costs one run of latency
+    // on auto-disable; losing the insert costs the site its news.
+    let health = null;
+    try {
+        health = await applyOutcomes(outcomes);
+    } catch (e) {
+        console.warn('[scraper] source health bookkeeping failed:', e.message);
+    }
 
     // Flatten + filter + dedupe before bulk insert
     const candidates = [];
@@ -161,7 +166,7 @@ async function scrape() {
 
     if (candidates.length === 0) {
         console.log('[scraper] No fresh items found.');
-        return { fetched: fetched.length, inserted: 0, skipped: 0, failed };
+        return { fetched: fetched.length, inserted: 0, skipped: 0, failed, health };
     }
 
     // In-memory semantic dedup: collapses same-story articles across sources.
@@ -209,6 +214,7 @@ async function scrape() {
         inserted: insertedCount,
         skipped: candidates.length - insertedCount,
         failed,
+        health,
     };
 }
 

@@ -6,6 +6,9 @@
 
 require('dotenv').config({ path: '.env.local' });
 
+const { dbSizeBytes, formatBytes, DISK_LIMIT_BYTES } = require('./lib/db');
+const runRecord        = require('./lib/run-record');
+
 const { scrape }       = require('./scraper');
 const retainer         = require('./agents/retainer');
 const curator          = require('./agents/curator');
@@ -40,24 +43,53 @@ const STAGES = [
     { name: 'summarizer', run: () => summarizer.run({ limit: 20 }) },
 ];
 
+// Per-stage detail is capped before it goes into the worker_runs jsonb column.
+// Stage results are small objects today, but an agent that starts returning an
+// array of every row it touched would write megabytes per run into the same
+// volume this pipeline exists to keep under 500MB.
+const MAX_STAGE_DETAIL_CHARS = 500;
+
+function summarizeResult(result) {
+    if (result === undefined) return null;
+    const json = JSON.stringify(result);
+    return json.length > MAX_STAGE_DETAIL_CHARS ? json.slice(0, MAX_STAGE_DETAIL_CHARS) + '…' : result;
+}
+
 // Returns { total, failed } so the caller can decide the exit code.
 async function pipeline() {
     const t0 = Date.now();
     console.log(`\n[orch] ===== Run starting @ ${new Date().toISOString()} =====`);
 
+    // Read the gauge BEFORE the retainer runs, so the recorded series is the
+    // high-water mark of each cycle rather than the post-cleanup trough. A trough
+    // series would have looked healthy right up to the day the disk filled.
+    const dbBytes = await dbSizeBytes();
+    if (dbBytes !== null) {
+        const pct = ((dbBytes / DISK_LIMIT_BYTES) * 100).toFixed(1);
+        console.log(`[orch] db size ${formatBytes(dbBytes)} / ${formatBytes(DISK_LIMIT_BYTES)} (${pct}%)`);
+    }
+
+    const handle = await runRecord.start({ dbBytes });
+
+    const stages = {};
     let failed = 0;
     for (const stage of STAGES) {
         try {
             const result = await stage.run();
+            stages[stage.name] = { ok: true, result: summarizeResult(result) };
             if (result !== undefined) console.log(`[orch] ${stage.name}: ${JSON.stringify(result)}`);
         } catch (e) {
             failed++;
+            stages[stage.name] = { ok: false, error: e.message };
             console.error(`[orch] ${stage.name} failed:`, e.message);
         }
     }
 
     const dur = ((Date.now() - t0) / 1000).toFixed(1);
     console.log(`[orch] ===== Run finished in ${dur}s — ${STAGES.length - failed}/${STAGES.length} stages ok =====\n`);
+
+    await runRecord.finish(handle, { stages, failed });
+
     return { total: STAGES.length, failed };
 }
 
@@ -68,6 +100,11 @@ async function main() {
         // A run where every stage failed did no work at all — in practice an upstream
         // outage (database unreachable). Exit non-zero so CI reports it instead of
         // showing a green run that ingested nothing.
+        //
+        // PARTIAL failure deliberately still exits 0. It is not "fine" — it is caught
+        // by worker/scripts/watchdog.js, which reads worker_runs.stages_failed and
+        // raises an issue. Failing CI on it too would double-alert on every transient
+        // Groq rate-limit, and an alert channel that cries wolf gets muted.
         if (failed === total) {
             console.error(`[orch] all ${total} stages failed — exiting 1`);
             process.exit(1);
@@ -79,4 +116,11 @@ async function main() {
     setInterval(pipeline, INTERVAL_MIN * 60_000);
 }
 
-main().catch(e => { console.error('[orch] fatal:', e); process.exit(1); });
+// Only self-start when invoked directly. Required so `pipeline` and `STAGES` can
+// be imported (by tests, or by any caller that needs the canonical stage list)
+// without kicking off a scrape as a side effect of the require.
+if (require.main === module) {
+    main().catch(e => { console.error('[orch] fatal:', e); process.exit(1); });
+}
+
+module.exports = { STAGES, pipeline };

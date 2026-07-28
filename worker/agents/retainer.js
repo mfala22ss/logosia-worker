@@ -17,10 +17,72 @@
 //
 // Pinned articles (editor's picks) are exempt from both passes.
 
-const { db } = require('../lib/db');
+const { db, dbSizeBytes, formatBytes, DISK_LIMIT_BYTES } = require('../lib/db');
 
 const PRUNE_AFTER_DAYS  = parseInt(process.env.PRUNE_AFTER_DAYS  || '3',  10);
 const DELETE_AFTER_DAYS = parseInt(process.env.DELETE_AFTER_DAYS || '14', 10);
+
+// ── Disk-headroom guard ────────────────────────────────────────────────────
+//
+// The static 3d/14d windows were never measured against the 500MB volume — they
+// were a guess made while cleaning up the 2026-07-20 outage. If ingest volume
+// grows (more feeds, wordier sources, a backlog after downtime) the fixed windows
+// stop being sufficient and the disk fills again in exactly the same way, only
+// this time with a retainer running and appearing to work.
+//
+// So the windows are a floor, not a fixed value. Above SOFT the run halves both
+// windows; above HARD it collapses them to the emergency minimums. Recovery is
+// automatic: the tightening is computed per run from the CURRENT size, so once
+// usage drops back the windows widen again on the next run with no intervention.
+//
+// The thresholds are deliberately well below 100%. Postgres needs free disk to
+// write WAL, and once it cannot, it wedges in a crash-recovery loop where NO SQL
+// runs at all — not TRUNCATE, not DROP INDEX, not the dashboard editor. There is
+// no reactive fix at 100%; the only workable margin is the one taken early.
+const SOFT_THRESHOLD_PCT = parseInt(process.env.DISK_SOFT_PCT || '70', 10);
+const HARD_THRESHOLD_PCT = parseInt(process.env.DISK_HARD_PCT || '85', 10);
+
+// Emergency floors. Below these the site has no content worth serving, so there
+// is nothing to gain by shrinking further — at that point the problem is ingest
+// volume or the plan, not retention.
+const EMERGENCY_PRUNE_DAYS  = 1;
+const EMERGENCY_DELETE_DAYS = 3;
+
+// worker_runs grows unbounded by the same mechanism that killed the database the
+// first time: a table nothing ever deletes from. ~96 rows/day is negligible until
+// it is not, and "negligible" is what `articles` was on day one.
+const WORKER_RUNS_RETAIN_DAYS = parseInt(process.env.WORKER_RUNS_RETAIN_DAYS || '30', 10);
+
+// Chooses the retention windows for THIS run from current disk usage.
+// Returns the configured defaults when the size is unknown — a failure to read
+// the gauge must not silently trigger emergency deletion of real content.
+function windowsFor(usedBytes) {
+    if (usedBytes === null) {
+        return { pruneDays: PRUNE_AFTER_DAYS, deleteDays: DELETE_AFTER_DAYS, level: 'normal', pct: null };
+    }
+
+    const pct = (usedBytes / DISK_LIMIT_BYTES) * 100;
+
+    if (pct >= HARD_THRESHOLD_PCT) {
+        return {
+            pruneDays:  Math.min(PRUNE_AFTER_DAYS,  EMERGENCY_PRUNE_DAYS),
+            deleteDays: Math.min(DELETE_AFTER_DAYS, EMERGENCY_DELETE_DAYS),
+            level: 'hard',
+            pct,
+        };
+    }
+
+    if (pct >= SOFT_THRESHOLD_PCT) {
+        return {
+            pruneDays:  Math.max(EMERGENCY_PRUNE_DAYS,  Math.floor(PRUNE_AFTER_DAYS  / 2)),
+            deleteDays: Math.max(EMERGENCY_DELETE_DAYS, Math.floor(DELETE_AFTER_DAYS / 2)),
+            level: 'soft',
+            pct,
+        };
+    }
+
+    return { pruneDays: PRUNE_AFTER_DAYS, deleteDays: DELETE_AFTER_DAYS, level: 'normal', pct };
+}
 
 // Rows per round-trip. Large range deletes on one statement hit Supabase's
 // statement timeout once the table is big, so both passes work in batches.
@@ -71,8 +133,8 @@ async function selectBatch(before, extraFilter) {
     return (data || []).map(r => r.id);
 }
 
-async function deletePass() {
-    const before = cutoff(DELETE_AFTER_DAYS);
+async function deletePass(deleteDays) {
+    const before = cutoff(deleteDays);
     let deleted = 0;
 
     for (let i = 0; i < MAX_BATCHES; i++) {
@@ -89,8 +151,8 @@ async function deletePass() {
     return deleted;
 }
 
-async function prunePass() {
-    const before = cutoff(PRUNE_AFTER_DAYS);
+async function prunePass(pruneDays) {
+    const before = cutoff(pruneDays);
     let pruned = 0;
 
     for (let i = 0; i < MAX_BATCHES; i++) {
@@ -109,18 +171,62 @@ async function prunePass() {
     return pruned;
 }
 
+// Trims worker_runs. Separate from the article passes because the volumes differ
+// by four orders of magnitude — this is a single small range delete, not a batched
+// walk, and it is not worth the round trips to select ids first.
+async function trimRunHistory() {
+    const { error } = await db
+        .from('worker_runs')
+        .delete()
+        .lt('started_at', cutoff(WORKER_RUNS_RETAIN_DAYS));
+
+    // Non-fatal. This table existing at all is an improvement over not knowing
+    // anything; failing the retainer over its housekeeping would be a regression.
+    if (error) console.warn('[retainer] worker_runs trim failed:', error.message);
+}
+
 // Delete runs before prune: it removes the largest rows outright, so the prune
 // pass never does redundant work on records that are about to disappear anyway.
 async function run() {
-    const deleted = await deletePass();
-    const pruned  = await prunePass();
+    const usedBytes = await dbSizeBytes();
+    const { pruneDays, deleteDays, level, pct } = windowsFor(usedBytes);
+
+    if (level !== 'normal') {
+        console.warn(
+            `[retainer] ⚠ disk at ${pct.toFixed(1)}% ` +
+            `(${formatBytes(usedBytes)}/${formatBytes(DISK_LIMIT_BYTES)}) — ` +
+            `${level} threshold crossed, tightening retention to ` +
+            `prune>${pruneDays}d delete>${deleteDays}d for this run.`
+        );
+    }
+
+    const deleted = await deletePass(deleteDays);
+    const pruned  = await prunePass(pruneDays);
+    await trimRunHistory();
 
     console.log(
-        `[retainer] ✓ deleted ${deleted} (>${DELETE_AFTER_DAYS}d), ` +
-        `pruned ${pruned} (>${PRUNE_AFTER_DAYS}d).`
+        `[retainer] ✓ deleted ${deleted} (>${deleteDays}d), ` +
+        `pruned ${pruned} (>${pruneDays}d).`
     );
 
-    return { deleted, pruned };
+    // used_bytes / used_pct land in worker_runs.stages, which gives the watchdog a
+    // usage series to trend on rather than a single instantaneous reading.
+    return {
+        deleted,
+        pruned,
+        prune_days:  pruneDays,
+        delete_days: deleteDays,
+        level,
+        used_bytes:  usedBytes,
+        used_pct:    pct === null ? null : Number(pct.toFixed(1)),
+    };
 }
 
-module.exports = { run, PRUNE_AFTER_DAYS, DELETE_AFTER_DAYS };
+module.exports = {
+    run,
+    windowsFor,
+    PRUNE_AFTER_DAYS,
+    DELETE_AFTER_DAYS,
+    SOFT_THRESHOLD_PCT,
+    HARD_THRESHOLD_PCT,
+};
