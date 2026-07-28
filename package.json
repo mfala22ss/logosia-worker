@@ -11,6 +11,8 @@
     "worker:once": "node worker/index.js --once",
     "worker:scrape": "node worker/index.js",
     "db:seed-sources": "node worker/scripts/seed-sources.js",
+    "watchdog": "node worker/scripts/watchdog.js",
+    "smoke": "node worker/scripts/smoke.js",
     "scrape": "node -e \"const {scrape}=require('./worker/scraper.js');scrape().then(r=>console.log('[scrape done]',r)).catch(e=>{console.error(e);process.exit(1)})\"",
     "categorize": "node -e \"const {run}=require('./worker/agents/categorizer.js');run().then(r=>console.log('[categorize done]',r)).catch(e=>{console.error(e);process.exit(1)})\"",
     "curate": "node -e \"const {run}=require('./worker/agents/curator.js');run().then(r=>console.log('[curate done]',r)).catch(e=>{console.error(e);process.exit(1)})\"",

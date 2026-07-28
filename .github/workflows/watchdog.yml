@@ -1,0 +1,50 @@
+name: Watchdog
+
+# Deliberately a SEPARATE workflow from the pipeline it watches. A watchdog that
+# runs as a step inside the worker job cannot report that the worker job never
+# started — which is exactly what happened when the schedule went quiet for eight
+# days in July 2026.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+# Never queue watchdog runs. If one is somehow slow, the next tick's reading is
+# more useful than the stale one finishing — unlike the pipeline, which must not
+# overlap itself.
+concurrency:
+  group: watchdog
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write   # opens the @claude issue that triggers claude.yml
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Run watchdog
+        run: npm run watchdog
+        env:
+          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SITE_URL:                  ${{ vars.SITE_URL || 'https://logosia.com.au' }}
+
+          # Alert channels — all optional, configured by presence. Set at least one,
+          # or the watchdog can detect an outage and still have nowhere to say so.
+          NTFY_TOPIC:                ${{ secrets.NTFY_TOPIC }}
+          TELEGRAM_BOT_TOKEN:        ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:          ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL:       ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+          GITHUB_TOKEN:              ${{ secrets.GITHUB_TOKEN }}

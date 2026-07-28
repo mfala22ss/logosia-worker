@@ -1,0 +1,79 @@
+name: Auto-merge (data-only)
+
+# Closes the unattended loop — for one narrow change class and no other.
+#
+# ── Why the allowlist is this small ────────────────────────────────────────
+# The realistic autonomous repair in this repo is a dead feed URL: a publisher
+# moves its RSS endpoint, the source fails for sixteen straight hours, the
+# watchdog notices, Claude finds the new URL and edits worker/data/feeds.json.
+# That change is verifiable by CI (the JSON parses), reversible in one revert, and
+# its worst outcome is one feed staying broken.
+#
+# Code is not like that. This pipeline's dangerous changes are subtractions —
+# removing the retainer, widening a retention window, raising a stage limit — and
+# they are dangerous precisely because they look fine and pass every test. The
+# damage shows up a week later as a full disk, which is unrecoverable on the free
+# plan. There is no test that catches "this is safe today and fatal in six days",
+# so code changes wait for a human. That is the whole reasoning; if the allowlist
+# is ever widened, this paragraph is the thing being traded away.
+#
+# Off by default. Enable with: gh variable set AUTO_MERGE_ENABLED --body true
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    # pull_request_target runs with repo write access against the BASE ref, which
+    # is why this job checks out nothing and runs no code from the PR. It only
+    # asks the API which paths changed.
+    if: vars.AUTO_MERGE_ENABLED == 'true' && github.event.pull_request.user.login == 'claude[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check every changed path is on the allowlist
+        id: paths
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          files=$(gh api "repos/$REPO/pulls/$PR/files" --paginate --jq '.[].filename')
+          echo "Changed files:"; echo "$files"
+
+          # Data files only. Anything else — including .github/**, which could
+          # otherwise be used to widen this very allowlist — falls through to a
+          # human. Note feeds.json membership changes are still a human call per
+          # the source policy; CI cannot tell "fixed a URL" from "added an outlet".
+          bad=$(echo "$files" | grep -v -E '^worker/data/[a-z0-9-]+\.json$' || true)
+
+          if [ -n "$bad" ]; then
+            echo "::notice::Not auto-mergeable — changes outside worker/data/*.json:"
+            echo "$bad"
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "eligible=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Enable auto-merge
+        if: steps.paths.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # --auto queues the merge behind required status checks rather than
+          # merging now. Without branch protection requiring CI, GitHub merges
+          # immediately — so protecting main with the CI check is what actually
+          # makes this safe. See README "Self-maintenance".
+          gh pr merge "$PR" --repo "$REPO" --squash --auto --delete-branch
+          gh pr comment "$PR" --repo "$REPO" --body \
+            "Auto-merge queued: every changed path is on the data-only allowlist and CI must pass first."

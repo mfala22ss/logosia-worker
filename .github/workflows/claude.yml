@@ -1,0 +1,61 @@
+name: Claude Code
+
+# The autonomous repair arm. Triggered by watchdog-opened issues (which contain
+# "@claude" in the body) and by you mentioning @claude anywhere manually.
+#
+# Bounded on purpose. Claude may investigate and open a pull request; it may not
+# push to main. The CI workflow gates the PR and, unless auto-merge is explicitly
+# enabled for the narrow data-only path (see automerge.yml), a human merges.
+#
+# The reason is not distrust of the model — it is that this repo's worst failure
+# mode is a change that looks correct and quietly removes a safety property. The
+# retainer is one function call; deleting it takes one line and the pipeline stays
+# green for about a week before the disk fills again.
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+
+concurrency:
+  # One Claude run per issue/PR. Without this, an issue that gets several comments
+  # in a minute starts several agents on the same problem, which race to open
+  # duplicate PRs against the same branch name.
+  group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  claude:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write        # create a branch and commit the fix
+      pull-requests: write   # open the PR
+      issues: write          # comment back on the triggering issue
+      actions: read          # read the failing run's logs
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Full history: diagnosing "this worked last week" needs to be able to
+          # look at last week. fetch-depth 1 makes git log useless.
+          fetch-depth: 0
+
+      - name: Run Claude Code
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            actions: read
+          claude_args: '--allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(npm ci),Bash(npm run watchdog),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"'

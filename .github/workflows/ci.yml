@@ -1,0 +1,62 @@
+name: CI
+
+# The gate on every Claude-authored PR. This repo is plain CommonJS with no type
+# checker, so "it compiles" is not available — these checks stand in for it. They
+# are cheap and they run without secrets, which matters: a PR from an automated
+# author must be verifiable without handing it database credentials.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # Catches syntax errors without executing anything. The minimum bar a PR
+      # must clear before a human is asked to look at it.
+      - name: Syntax check
+        run: git ls-files '*.js' | xargs -n1 node --check
+
+      # Every JSON data file must parse. feeds.json is the file most likely to be
+      # edited by an agent fixing a dead feed URL, and it is also the one whose
+      # corruption stops the entire scrape.
+      - name: Validate JSON data files
+        run: git ls-files '*.json' | xargs -n1 node -e 'JSON.parse(require("fs").readFileSync(process.argv[1]))'
+
+      # Loads every module without running the pipeline. Catches bad requires,
+      # circular imports, and typos in export names — the failure class that a
+      # syntax check misses and that would otherwise only surface at 3am on the
+      # hourly cron. Depends on worker/index.js not self-starting when required.
+      - name: Import smoke test
+        run: node worker/scripts/smoke.js
+        env:
+          # The modules call process.exit() at import time without these. Dummy
+          # values are correct here: this asserts the code LOADS, and it must not
+          # need production credentials to do so.
+          SUPABASE_URL: https://placeholder.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: placeholder
+          GROQ_KEY: placeholder
+
+      # The retainer running first is load-bearing: it is what stops the 500MB
+      # volume filling, and reordering it silently recreates the July 2026 outage.
+      # Asserted in CI because a review comment is not a guarantee.
+      - name: Assert retainer runs first
+        run: node worker/scripts/smoke.js --assert-stage-order
+        env:
+          SUPABASE_URL: https://placeholder.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: placeholder
+          GROQ_KEY: placeholder
