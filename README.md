@@ -105,6 +105,28 @@ today, fatal in six days", so code waits for a human.
 Optional: `gh variable set AUTO_MERGE_ENABLED --body true` to close the loop on
 data-only fixes.
 
+### Branch protection
+
+`main` is protected (set 2026-07-31):
+
+| Rule | Value |
+|------|-------|
+| Required status check | `verify` (from `ci.yml`), strict |
+| Code-owner review | required, 1 approval |
+| Force pushes / deletion | blocked |
+| `enforce_admins` | **false** |
+
+`enforce_admins: false` is deliberate. The owner can still push straight to
+`main`; everyone else must open a PR that passes `verify` and is approved by a
+code owner. Turning it on would block the owner's own workflow to defend against
+an attacker who, by definition, already has owner credentials — so it buys
+nothing and costs the day-to-day.
+
+This is also what makes `automerge.yml` real. `gh pr merge --auto` queues behind
+*required* checks; with no branch protection GitHub merges immediately and the
+CI gate is decorative. `verify` being required is the difference between an
+auto-merge that is tested and one that only looks tested.
+
 ### The one failure this cannot see
 
 The watchdog runs on GitHub Actions, so a GitHub-wide incident takes down the
