@@ -30,11 +30,28 @@ const { db, dbSizeBytes, formatBytes, DISK_LIMIT_BYTES } = require('../lib/db');
 const { alert } = require('../lib/alert');
 
 // ── Thresholds ─────────────────────────────────────────────────────────────
-// The hourly worker plus the 15-minute premium scraper mean a healthy system
-// produces a successful run well inside 90 minutes. Set wide enough that one
-// retried or queued run does not page, tight enough that half a day never passes
-// unnoticed the way eight days did.
-const MAX_MINUTES_SINCE_SUCCESS = parseInt(process.env.WATCHDOG_MAX_MINUTES || '90', 10);
+// Measured, not assumed. The first version of this used 90 minutes on the theory
+// that an hourly cron produces a success every hour. It does not:
+//
+//   observed starts: 00:03 · 22:07 · 20:15 · 18:17 · 16:27 · 14:05  (~2h apart)
+//
+// GitHub does not guarantee scheduled workflows fire on time — they are queued
+// best-effort and are routinely delayed under load — and a full run then takes a
+// further 8-14 minutes. So a perfectly healthy pipeline sits >90 minutes past its
+// last success for a large part of every cycle, and the watchdog paged on it
+// every 15 minutes for three days.
+//
+// 240 minutes clears the observed ~2h cadence plus the 3h21m excursion seen on
+// 2026-07-31, with room for one skipped cron on top.
+//
+// This is calibration against measured behaviour, not muting an inconvenient
+// alarm — a distinction worth holding onto, because they look identical from the
+// diff. The test: does the threshold still catch the failure it was built for?
+// The 2026-07-20 outage ran EIGHT DAYS. Catching it in 4 hours instead of 90
+// minutes loses nothing that mattered. If these numbers ever need raising again,
+// that is evidence the cron delivery has degraded further and is itself the
+// finding — do not raise them silently.
+const MAX_MINUTES_SINCE_SUCCESS = parseInt(process.env.WATCHDOG_MAX_MINUTES || '240', 10);
 
 // Separate and much wider: this asks "is the SCHEDULER alive at all?", not "did
 // the run succeed?". GitHub disables scheduled workflows in public repos after a
@@ -42,12 +59,18 @@ const MAX_MINUTES_SINCE_SUCCESS = parseInt(process.env.WATCHDOG_MAX_MINUTES || '
 // email, and no red run — the pipeline simply stops existing. A recency check on
 // successful runs cannot distinguish that from a normal outage; only the absence
 // of ANY run row can.
-const MAX_MINUTES_SINCE_ANY_RUN = parseInt(process.env.WATCHDOG_MAX_SILENCE || '240', 10);
+const MAX_MINUTES_SINCE_ANY_RUN = parseInt(process.env.WATCHDOG_MAX_SILENCE || '360', 10);
 
 // A pipeline that runs, goes green, and ingests nothing is the failure mode that
 // preceded the outage. Green runs are not the health signal — new rows are.
+//
+// The window must exceed the real gap between runs or it reports zero simply
+// because the last run fell outside it. At a 3h window this fired at 03:24 on
+// 2026-07-31 with the pipeline perfectly healthy: the previous run was at 00:02,
+// 3h21m earlier, so of course nothing had been ingested in the last 3 hours.
+// 6h covers the observed cadence with margin.
 const MIN_ARTICLES_PER_WINDOW = parseInt(process.env.WATCHDOG_MIN_ARTICLES || '1', 10);
-const ARTICLE_WINDOW_HOURS    = parseInt(process.env.WATCHDOG_ARTICLE_HOURS || '3', 10);
+const ARTICLE_WINDOW_HOURS    = parseInt(process.env.WATCHDOG_ARTICLE_HOURS || '6', 10);
 
 // Well under the hard retention threshold, so the alert arrives while there is
 // still room to act. At 100% there is no reactive fix — see retainer.js.
@@ -335,13 +358,22 @@ async function ensureLabel() {
     }
 }
 
-function issueBody(signature, failures, allChecks) {
+function issueBody(signature, failures, allChecks, actionable) {
     const table = allChecks
         .map(c => `| ${c.ok ? '✅' : '❌'} | \`${c.name}\` | ${c.severity} | ${(c.detail || 'ok').replace(/\n/g, '<br>')} |`)
         .join('\n');
 
+    // The @claude mention is what triggers claude.yml, so it is added only when
+    // something here is fixable in code. A full disk or a dead scheduler still
+    // gets an issue — a human needs to know, and the open issue is what stops
+    // this condition re-alerting every 15 minutes — but no agent is summoned to
+    // write a PR it cannot possibly make work.
+    const header = actionable
+        ? '@claude The Logosia watchdog detected a persistent failure. Investigate and open a PR if there is a code-level fix.'
+        : '**No agent has been summoned.** This condition is infrastructure, not code — a pull request cannot fix it. It needs a human.';
+
     return `<!-- watchdog-signature: ${signature} -->
-@claude The Logosia watchdog detected a persistent failure. Investigate and open a PR if there is a code-level fix.
+${header}
 
 ## Failing checks
 
@@ -374,24 +406,28 @@ Read \`AGENTS.md\` first. Then, specifically:
 Close this issue when the underlying condition clears; the watchdog will open a new one if it recurs.`;
 }
 
+// Returns { issue, alreadyOpen }.
+//
+// Every distinct failure signature gets an issue, actionable or not. The issue is
+// what makes a condition *acknowledged*, and acknowledgement is what stops it
+// re-alerting. Before this, `protected_sources` — a true finding, 99 dead tier-1
+// feeds — re-alerted and failed the run every 15 minutes for three days, because
+// nobody can fix 99 feeds between two watchdog ticks. A monitor that keeps
+// shouting about something you already know gets muted, and then it is not a
+// monitor any more.
 async function escalateToGitHub(failures, allChecks) {
     if (!REPO || !TOKEN) {
         console.log('[watchdog] no GITHUB_REPOSITORY/GITHUB_TOKEN — skipping issue escalation');
-        return null;
+        return { issue: null, alreadyOpen: false };
     }
 
-    const actionable = failures.filter(f => f.actionable);
-    if (!actionable.length) {
-        console.log('[watchdog] no actionable failures — alerting a human only, not summoning an agent');
-        return null;
-    }
-
-    const signature = signatureFor(actionable);
+    const signature  = signatureFor(failures);
+    const actionable = failures.some(f => f.actionable);
 
     const existing = await findOpenIssue(signature);
     if (existing) {
-        console.log(`[watchdog] issue #${existing.number} already open for "${signature}" — not duplicating`);
-        return existing;
+        console.log(`[watchdog] issue #${existing.number} already open for "${signature}" — acknowledged, staying quiet`);
+        return { issue: existing, alreadyOpen: true };
     }
 
     await ensureLabel();
@@ -399,14 +435,14 @@ async function escalateToGitHub(failures, allChecks) {
     const issue = await github(`/repos/${REPO}/issues`, {
         method: 'POST',
         body: JSON.stringify({
-            title: `[watchdog] ${actionable.map(f => f.name).join(', ')} failing`,
-            body: issueBody(signature, actionable, allChecks),
+            title: `[watchdog] ${failures.map(f => f.name).join(', ')} failing`,
+            body: issueBody(signature, failures, allChecks, actionable),
             labels: [ISSUE_LABEL],
         }),
     });
 
     console.log(`[watchdog] opened issue #${issue.number} — ${issue.html_url}`);
-    return issue;
+    return { issue, alreadyOpen: false };
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────
@@ -444,21 +480,40 @@ async function main() {
         return 0;
     }
 
-    const critical = failures.some(f => f.severity === 'critical');
-    const title = `${critical ? '🔴' : '🟠'} Logosia: ${failures.map(f => f.name).join(', ')}`;
-    const message = failures.map(f => `[${f.severity}] ${f.name}\n${f.detail}`).join('\n\n');
-
-    // Alert first, escalate second. Notifying a human is the step that must not be
-    // lost if the GitHub API is having a bad day.
-    await alert(title, message, { priority: critical ? 'critical' : 'warning' });
-
+    // Escalate BEFORE alerting, because whether an issue is already open decides
+    // whether this is news. The ordering costs one GitHub round trip; the previous
+    // ordering cost three days of 15-minute pages.
+    let alreadyOpen = false;
+    let issueNumber = null;
     try {
-        await escalateToGitHub(failures, checks);
+        const result = await escalateToGitHub(failures, checks);
+        alreadyOpen = result.alreadyOpen;
+        issueNumber = result.issue?.number ?? null;
     } catch (e) {
+        // If GitHub is unreachable we cannot tell "known" from "new", so fall
+        // through and alert. A duplicate page beats a silent outage.
         console.error('[watchdog] issue escalation failed:', e.message);
     }
 
-    // Non-zero so the watchdog's own run goes red in the Actions list. That is the
+    if (alreadyOpen) {
+        console.log(
+            `[watchdog] condition already tracked in issue #${issueNumber} — no alert, exiting 0.\n` +
+            `[watchdog] close the issue to re-arm; it reopens automatically if the condition recurs.`
+        );
+        // Exit 0 deliberately. A red run every 15 minutes for an acknowledged
+        // condition trains you to ignore red runs, which is the state this whole
+        // system exists to prevent.
+        return 0;
+    }
+
+    const critical = failures.some(f => f.severity === 'critical');
+    const title = `${critical ? '🔴' : '🟠'} Logosia: ${failures.map(f => f.name).join(', ')}`;
+    const message = failures.map(f => `[${f.severity}] ${f.name}\n${f.detail}`).join('\n\n')
+        + (issueNumber ? `\n\nTracked in issue #${issueNumber}.` : '');
+
+    await alert(title, message, { priority: critical ? 'critical' : 'warning' });
+
+    // Non-zero so a NEW condition goes red in the Actions list. That is the
     // last-resort signal for the case where every alert channel is misconfigured.
     return 1;
 }
