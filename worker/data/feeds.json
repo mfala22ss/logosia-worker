@@ -869,22 +869,6 @@
     ]
   },
   {
-    "name": "Mail & Guardian Africa",
-    "url": "https://mg.co.za/feed/",
-    "origin": "[ZAF]",
-    "language": "en",
-    "bias": -1,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "corporate",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Reuters Africa",
     "url": "https://news.google.com/rss/search?q=site:reuters.com+africa&hl=en-US&gl=US&ceid=US:en",
     "origin": "[INT]",
@@ -1137,22 +1121,6 @@
     ]
   },
   {
-    "name": "The Peninsula Qatar",
-    "url": "https://thepeninsulaqatar.com/rss",
-    "origin": "[QAT]",
-    "language": "en",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "energy",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Hurriyet Daily News",
     "url": "https://www.hurriyetdailynews.com/rss.aspx",
     "origin": "[TUR]",
@@ -1169,21 +1137,6 @@
     ]
   },
   {
-    "name": "Kyiv Independent",
-    "url": "https://kyivindependent.com/feed/",
-    "origin": "[UKR]",
-    "language": "en",
-    "bias": 1,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Hong Kong Free Press",
     "url": "https://hongkongfp.com/feed/",
     "origin": "[HKG]",
@@ -1197,38 +1150,6 @@
       "geopolitical",
       "corporate",
       "economic"
-    ]
-  },
-  {
-    "name": "RTHK News",
-    "url": "https://news.rthk.hk/rthk/webpages/news/rss.php?lang=en&cat=news",
-    "origin": "[HKG]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "financial",
-      "corporate"
-    ]
-  },
-  {
-    "name": "The Nation Thailand",
-    "url": "https://www.nationthailand.com/rss.xml",
-    "origin": "[THA]",
-    "language": "en",
-    "bias": 0,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "corporate",
-      "geopolitical"
     ]
   },
   {
@@ -1378,21 +1299,6 @@
     ]
   },
   {
-    "name": "Iran International",
-    "url": "https://www.iranintl.com/en/rss",
-    "origin": "[IRN]",
-    "language": "en",
-    "bias": -1,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "El Financiero Mexico",
     "url": "https://news.google.com/rss/search?q=site:elfinanciero.com.mx&hl=es-419&gl=MX&ceid=MX:es-419",
     "origin": "[MEX]",
@@ -1458,21 +1364,6 @@
     ]
   },
   {
-    "name": "DW Science Tech",
-    "url": "https://rss.dw.com/rdf/rss-en-sci-tech",
-    "origin": "[DEU]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 2,
-    "focus": [
-      "technology",
-      "health",
-      "energy"
-    ]
-  },
-  {
     "name": "Le Monde Santé",
     "url": "https://www.lemonde.fr/sante/rss_full.xml",
     "origin": "[FRA]",
@@ -1497,20 +1388,6 @@
     "focus": [
       "technology",
       "health"
-    ]
-  },
-  {
-    "name": "ABC Australia Technology",
-    "url": "https://www.abc.net.au/news/feed/52278/rss.xml",
-    "origin": "[AUS]",
-    "language": "en",
-    "bias": -1,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 2,
-    "focus": [
-      "technology",
-      "corporate"
     ]
   },
   {
@@ -1607,22 +1484,6 @@
     ]
   },
   {
-    "name": "Business Day South Africa",
-    "url": "https://www.businesslive.co.za/rss/bd/",
-    "origin": "[ZAF]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "energy"
-    ]
-  },
-  {
     "name": "Hurriyet Ekonomi",
     "url": "https://news.google.com/rss/search?q=site:hurriyet.com.tr+ekonomi&hl=tr&gl=TR&ceid=TR:tr",
     "origin": "[TUR]",
@@ -1646,22 +1507,6 @@
     "bias": 2,
     "factual": 7,
     "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology"
-    ]
-  },
-  {
-    "name": "The Edge Malaysia",
-    "url": "https://theedgemalaysia.com/rss",
-    "origin": "[MYS]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
     "tier": 2,
     "focus": [
       "financial",
@@ -1851,22 +1696,6 @@
     ]
   },
   {
-    "name": "IEA News",
-    "url": "https://www.iea.org/news/rss",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 10,
-    "credibility": 10,
-    "tier": 1,
-    "focus": [
-      "energy",
-      "economic",
-      "geopolitical",
-      "technology"
-    ]
-  },
-  {
     "name": "OPEC News",
     "url": "https://www.opec.org/opec_web/en/press_room/4655.htm",
     "origin": "[INT]",
@@ -1879,22 +1708,6 @@
       "energy",
       "economic",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "Globes English",
-    "url": "https://en.globes.co.il/en/feed",
-    "origin": "[ISR]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology"
     ]
   },
   {
@@ -1914,22 +1727,6 @@
     ]
   },
   {
-    "name": "Kyiv Independent Business",
-    "url": "https://kyivindependent.com/tag/business/feed/",
-    "origin": "[UKR]",
-    "language": "en",
-    "bias": 1,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology"
-    ]
-  },
-  {
     "name": "Arab News Business",
     "url": "https://www.arabnews.com/taxonomy/term/4/feed",
     "origin": "[SAU]",
@@ -1946,38 +1743,6 @@
     ]
   },
   {
-    "name": "The Peninsula Business",
-    "url": "https://thepeninsulaqatar.com/rss/business",
-    "origin": "[QAT]",
-    "language": "en",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology"
-    ]
-  },
-  {
-    "name": "El Espectador Economía",
-    "url": "https://www.elespectador.com/economia/rss",
-    "origin": "[COL]",
-    "language": "es",
-    "bias": -1,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "technology",
-      "health"
-    ]
-  },
-  {
     "name": "El País Economía",
     "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/economia/portada",
     "origin": "[ESP]",
@@ -1991,37 +1756,6 @@
       "economic",
       "corporate",
       "technology"
-    ]
-  },
-  {
-    "name": "El País Salud",
-    "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/salud/portada",
-    "origin": "[ESP]",
-    "language": "es",
-    "bias": -1,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "health",
-      "technology"
-    ]
-  },
-  {
-    "name": "Il Sole 24 Ore",
-    "url": "https://www.ilsole24ore.com/rss/notizie--ultimi-aggiornamenti.xml",
-    "origin": "[ITA]",
-    "language": "it",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology",
-      "energy"
     ]
   },
   {
@@ -2071,54 +1805,6 @@
     ]
   },
   {
-    "name": "La Tercera Tecnología",
-    "url": "https://www.latercera.com/rss/pulso/",
-    "origin": "[CHL]",
-    "language": "es",
-    "bias": 1,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "technology",
-      "financial",
-      "energy",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Caixin Global",
-    "url": "https://www.caixinglobal.com/rss/feed.xml",
-    "origin": "[CHN]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology"
-    ]
-  },
-  {
-    "name": "Het Financieele Dagblad",
-    "url": "https://fd.nl/rss.xml",
-    "origin": "[NLD]",
-    "language": "nl",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology"
-    ]
-  },
-  {
     "name": "Ekathimerini Greece",
     "url": "https://www.ekathimerini.com/rss/",
     "origin": "[GRC]",
@@ -2130,36 +1816,6 @@
     "focus": [
       "political",
       "geopolitical",
-      "financial",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "El Comercio Peru",
-    "url": "https://elcomercio.pe/rss/",
-    "origin": "[PER]",
-    "language": "es",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 70,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Gestión Peru",
-    "url": "https://gestion.pe/feed/",
-    "origin": "[PER]",
-    "language": "es",
-    "bias": 0,
-    "factual": 7,
-    "credibility": 70,
-    "tier": 2,
-    "focus": [
       "financial",
       "economic",
       "corporate"
@@ -2211,68 +1867,6 @@
     ]
   },
   {
-    "name": "Los Tiempos Bolivia",
-    "url": "https://www.lostiempos.com/rss/",
-    "origin": "[BOL]",
-    "language": "es",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 68,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "La Prensa Panama",
-    "url": "https://www.prensa.com/feed/",
-    "origin": "[PAN]",
-    "language": "es",
-    "bias": 0,
-    "factual": 7,
-    "credibility": 70,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "financial",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "La Nación Costa Rica",
-    "url": "https://www.nacion.com/feed/",
-    "origin": "[CRI]",
-    "language": "es",
-    "bias": 1,
-    "factual": 8,
-    "credibility": 75,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "financial",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Listín Diario",
-    "url": "https://listindiario.com/feed/",
-    "origin": "[DOM]",
-    "language": "es",
-    "bias": 0,
-    "factual": 7,
-    "credibility": 68,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Dawn Pakistan",
     "url": "https://www.dawn.com/feeds/home",
     "origin": "[PAK]",
@@ -2303,23 +1897,6 @@
       "health",
       "economic",
       "corporate"
-    ]
-  },
-  {
-    "name": "SvD Näringsliv",
-    "url": "https://www.svd.se/feed/section/naringsliv.rss",
-    "origin": "[SWE]",
-    "language": "sv",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "technology",
-      "energy"
     ]
   },
   {
@@ -2479,42 +2056,6 @@
     ]
   },
   {
-    "name": "Latvian Public Broadcasting",
-    "url": "https://eng.lsm.lv/rss.xml",
-    "origin": "[LVA]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate",
-      "health",
-      "energy"
-    ]
-  },
-  {
-    "name": "LRT English Lithuania",
-    "url": "https://www.lrt.lt/en/news-in-english/rss",
-    "origin": "[LTU]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate",
-      "health",
-      "technology"
-    ]
-  },
-  {
     "name": "Verslo Žinios Lithuania",
     "url": "https://news.google.com/rss/search?q=site:vz.lt&hl=lt&gl=LT&ceid=LT:lt",
     "origin": "[LTU]",
@@ -2584,51 +2125,6 @@
     ]
   },
   {
-    "name": "Rudaw Iraq",
-    "url": "https://www.rudaw.net/english/rss/all",
-    "origin": "[IRQ]",
-    "language": "en",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "L'Orient Today",
-    "url": "https://today.lorientlejour.com/feed/",
-    "origin": "[LBN]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Kuwait Times",
-    "url": "https://www.kuwaittimes.com/feed/",
-    "origin": "[KWT]",
-    "language": "en",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "energy",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Gulf Daily News Bahrain",
     "url": "https://www.gdnonline.com/Rss",
     "origin": "[BHR]",
@@ -2642,38 +2138,6 @@
       "economic",
       "financial",
       "energy"
-    ]
-  },
-  {
-    "name": "Times of Oman",
-    "url": "https://timesofoman.com/rss",
-    "origin": "[OMN]",
-    "language": "en",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "energy",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Oman Observer",
-    "url": "https://www.omanobserver.om/feed/",
-    "origin": "[OMN]",
-    "language": "en",
-    "bias": 1,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "energy",
-      "corporate"
     ]
   },
   {
@@ -2709,34 +2173,6 @@
     ]
   },
   {
-    "name": "AFP English",
-    "url": "https://www.afp.com/en/actus/afp_en_rss.xml",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "geopolitical",
-      "political"
-    ]
-  },
-  {
-    "name": "AP World News",
-    "url": "https://feeds.apnews.com/rss/apf-topnews",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "geopolitical",
-      "political"
-    ]
-  },
-  {
     "name": "UN News",
     "url": "https://news.un.org/feed/subscribe/en/news/all/rss.xml",
     "origin": "[INT]",
@@ -2749,61 +2185,6 @@
       "geopolitical",
       "political",
       "health"
-    ]
-  },
-  {
-    "name": "IMF News",
-    "url": "https://www.imf.org/en/News/rss",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "economic",
-      "financial"
-    ]
-  },
-  {
-    "name": "World Bank News",
-    "url": "https://www.worldbank.org/en/news/all/rss",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "economic",
-      "financial",
-      "health"
-    ]
-  },
-  {
-    "name": "NATO News",
-    "url": "https://www.nato.int/cps/en/natolive/news.htm?selectedLocale=en&rss=1",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "IEA",
-    "url": "https://www.iea.org/feed",
-    "origin": "[INT]",
-    "language": "en",
-    "bias": 0,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "energy"
     ]
   },
   {
@@ -2981,21 +2362,6 @@
     ]
   },
   {
-    "name": "Télam",
-    "url": "https://www.telam.com.ar",
-    "origin": "[ARG]",
-    "language": "es",
-    "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Télam (Google News RSS)",
     "url": "https://news.google.com/rss/search?q=site:telam.com.ar&hl=es-419&gl=AR&ceid=AR:es",
     "origin": "[ARG]",
@@ -3021,22 +2387,6 @@
     "tier": 1,
     "focus": [
       "political",
-      "economic"
-    ]
-  },
-  {
-    "name": "Australian Associated Press (AAP)",
-    "url": "https://www.aap.com.au",
-    "origin": "[AUS]",
-    "language": "en",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "financial",
       "economic"
     ]
   },
@@ -3132,36 +2482,6 @@
     ]
   },
   {
-    "name": "Belga News Agency",
-    "url": "https://www.belga.be",
-    "origin": "[BEL]",
-    "language": "fr",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "VRT NWS",
-    "url": "https://www.vrt.be/vrtnws/nl/",
-    "origin": "[BEL]",
-    "language": "nl",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "De Standaard",
     "url": "https://news.google.com/rss/search?q=site:standaard.be&hl=nl&gl=BE&ceid=BE:nl",
     "origin": "[BEL]",
@@ -3175,21 +2495,6 @@
       "geopolitical",
       "economic",
       "financial"
-    ]
-  },
-  {
-    "name": "Bangladesh Sangbad Sangstha (BSS)",
-    "url": "https://www.bssnews.net",
-    "origin": "[BGD]",
-    "language": "en",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
     ]
   },
   {
@@ -3250,21 +2555,6 @@
       "financial",
       "economic",
       "corporate"
-    ]
-  },
-  {
-    "name": "BTA - Bulgarian News Agency",
-    "url": "https://www.bta.bg/en",
-    "origin": "[BGR]",
-    "language": "bg",
-    "bias": 6,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
     ]
   },
   {
@@ -3385,35 +2675,6 @@
     ]
   },
   {
-    "name": "Agencia Boliviana de Información (ABI)",
-    "url": "https://www.abi.bo",
-    "origin": "[BOL]",
-    "language": "es",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "El Deber",
-    "url": "https://eldeber.com.bo",
-    "origin": "[BOL]",
-    "language": "es",
-    "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Página Siete",
     "url": "https://www.paginasiete.bo",
     "origin": "[BOL]",
@@ -3425,20 +2686,6 @@
     "focus": [
       "political",
       "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Correo del Sur",
-    "url": "https://correodelsur.com",
-    "origin": "[BOL]",
-    "language": "es",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
       "economic"
     ]
   },
@@ -3456,54 +2703,6 @@
       "geopolitical",
       "economic",
       "health"
-    ]
-  },
-  {
-    "name": "The Canadian Press",
-    "url": "https://www.thecanadianpress.com",
-    "origin": "[CAN]",
-    "language": "en",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "health"
-    ]
-  },
-  {
-    "name": "La Presse Canadienne",
-    "url": "https://www.lapressecanadienne.com",
-    "origin": "[CAN]",
-    "language": "fr",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "health"
-    ]
-  },
-  {
-    "name": "BNN Bloomberg Canada",
-    "url": "https://www.bnnbloomberg.ca/rss",
-    "origin": "[CAN]",
-    "language": "en",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 3,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate",
-      "energy"
     ]
   },
   {
@@ -3555,20 +2754,6 @@
     ]
   },
   {
-    "name": "China News Service",
-    "url": "https://www.chinanews.com.cn",
-    "origin": "[CHN]",
-    "language": "zh",
-    "bias": 9,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "China News Service (English)",
     "url": "https://news.google.com/rss/search?q=site:english.chinanews.com.cn&hl=en-US&gl=CN&ceid=CN:en",
     "origin": "[CHN]",
@@ -3610,34 +2795,6 @@
       "financial",
       "economic",
       "corporate"
-    ]
-  },
-  {
-    "name": "CRTV News",
-    "url": "https://www.crtv.cm",
-    "origin": "[CMR]",
-    "language": "fr",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Cameroon Tribune",
-    "url": "https://www.cameroon-tribune.cm",
-    "origin": "[CMR]",
-    "language": "fr",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic"
     ]
   },
   {
@@ -3683,21 +2840,6 @@
     ]
   },
   {
-    "name": "Agencia EFE Colombia",
-    "url": "https://www.efe.com/efe/america/colombia/50000245",
-    "origin": "[COL]",
-    "language": "es",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Colprensa",
     "url": "https://news.google.com/rss/search?q=site:colprensa.com&hl=es&gl=CO&ceid=CO:es",
     "origin": "[COL]",
@@ -3725,20 +2867,6 @@
       "political",
       "geopolitical",
       "economic"
-    ]
-  },
-  {
-    "name": "SINART / Sistema Nacional de Radio y Televisión",
-    "url": "https://www.sinart.go.cr",
-    "origin": "[CRI]",
-    "language": "es",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
     ]
   },
   {
@@ -3781,22 +2909,6 @@
     "focus": [
       "political",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "ČTK (Czech News Agency)",
-    "url": "https://www.ctk.eu/",
-    "origin": "[CZE]",
-    "language": "cs",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
     ]
   },
   {
@@ -3861,38 +2973,6 @@
       "geopolitical",
       "economic",
       "health"
-    ]
-  },
-  {
-    "name": "dpa (Deutsche Presse-Agentur)",
-    "url": "https://www.dpa.com/en/",
-    "origin": "[DEU]",
-    "language": "de",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "financial"
-    ]
-  },
-  {
-    "name": "Ritzaus Bureau",
-    "url": "https://ritzau.dk",
-    "origin": "[DNK]",
-    "language": "da",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
     ]
   },
   {
@@ -3972,66 +3052,6 @@
     ]
   },
   {
-    "name": "Algérie Presse Service (APS)",
-    "url": "https://www.aps.dz",
-    "origin": "[DZA]",
-    "language": "fr",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Algérie Presse Service (APS) — Arabic",
-    "url": "https://www.aps.dz/ar",
-    "origin": "[DZA]",
-    "language": "ar",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "El Watan",
-    "url": "https://www.elwatan.com",
-    "origin": "[DZA]",
-    "language": "fr",
-    "bias": 4,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Liberté Algérie",
-    "url": "https://www.liberte-algerie.com",
-    "origin": "[DZA]",
-    "language": "fr",
-    "bias": 4,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Le Soir d'Algérie",
     "url": "https://www.lesoirdalgerie.com",
     "origin": "[DZA]",
@@ -4058,21 +3078,6 @@
       "political",
       "geopolitical",
       "economic"
-    ]
-  },
-  {
-    "name": "El Universo",
-    "url": "https://www.eluniverso.com/arc/outboundfeeds/rss/",
-    "origin": "[ECU]",
-    "language": "es",
-    "bias": 6,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
     ]
   },
   {
@@ -4191,22 +3196,6 @@
     ]
   },
   {
-    "name": "RTVE Noticias",
-    "url": "https://www.rtve.es/api/recordings/next.rss",
-    "origin": "[ESP]",
-    "language": "es",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "health"
-    ]
-  },
-  {
     "name": "ERR (Eesti Rahvusringhääling)",
     "url": "https://news.google.com/rss/search?q=site:err.ee&hl=et&gl=EE&ceid=EE:et",
     "origin": "[EST]",
@@ -4250,36 +3239,6 @@
       "geopolitical",
       "economic",
       "corporate"
-    ]
-  },
-  {
-    "name": "Ethiopian News Agency (ENA)",
-    "url": "https://www.ena.et",
-    "origin": "[ETH]",
-    "language": "en",
-    "bias": 9,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Fana Broadcasting Corporate",
-    "url": "https://www.fanabc.com",
-    "origin": "[ETH]",
-    "language": "en",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
     ]
   },
   {
@@ -4332,37 +3291,6 @@
     "url": "https://stt.fi/feed/",
     "origin": "[FIN]",
     "language": "fi",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Aamulehti",
-    "url": "https://www.aamulehti.fi",
-    "origin": "[FIN]",
-    "language": "fi",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "AFP (Agence France-Presse)",
-    "url": "https://www.afp.com/en/news-hub",
-    "origin": "[FRA]",
-    "language": "fr",
     "bias": 5,
     "factual": 9,
     "credibility": 9,
@@ -4459,38 +3387,8 @@
     ]
   },
   {
-    "name": "Ghana News Agency",
-    "url": "https://www.ghananewsagency.org",
-    "origin": "[GHA]",
-    "language": "en",
-    "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Graphic Online",
     "url": "https://www.graphic.com.gh/?format=feed&type=rss",
-    "origin": "[GHA]",
-    "language": "en",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Citinewsroom",
-    "url": "https://citinewsroom.com",
     "origin": "[GHA]",
     "language": "en",
     "bias": 5,
@@ -4516,36 +3414,6 @@
       "political",
       "economic",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "Daily Graphic",
-    "url": "https://www.graphic.com.gh/daily-graphic",
-    "origin": "[GHA]",
-    "language": "en",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Business & Financial Times Ghana",
-    "url": "https://thebftonline.com",
-    "origin": "[GHA]",
-    "language": "en",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 3,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate"
     ]
   },
   {
@@ -4603,20 +3471,6 @@
       "political",
       "geopolitical",
       "economic"
-    ]
-  },
-  {
-    "name": "Hong Kong Government News",
-    "url": "https://www.info.gov.hk/gia/general/today.htm",
-    "origin": "[HKG]",
-    "language": "en",
-    "bias": 8,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
     ]
   },
   {
@@ -4709,21 +3563,6 @@
     ]
   },
   {
-    "name": "MTI – Magyar Távirati Iroda",
-    "url": "https://www.mti.hu",
-    "origin": "[HUN]",
-    "language": "hu",
-    "bias": 8,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Duna Médiaszolgáltató (Duna/M1 News)",
     "url": "https://news.google.com/rss/search?q=site:hirado.hu&hl=hu&gl=HU&ceid=HU:hu",
     "origin": "[HUN]",
@@ -4784,36 +3623,6 @@
     ]
   },
   {
-    "name": "Antara News Agency",
-    "url": "https://en.antaranews.com",
-    "origin": "[IDN]",
-    "language": "en",
-    "bias": 6,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Antara (Bahasa Indonesia)",
-    "url": "https://www.antaranews.com",
-    "origin": "[IDN]",
-    "language": "id",
-    "bias": 6,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "TVRI (Televisi Republik Indonesia)",
     "url": "https://news.google.com/rss/search?q=site:tvri.go.id&hl=id&gl=ID&ceid=ID:id",
     "origin": "[IDN]",
@@ -4859,38 +3668,6 @@
     ]
   },
   {
-    "name": "Press Trust of India (PTI)",
-    "url": "https://www.ptinews.com",
-    "origin": "[IND]",
-    "language": "en",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Asian News International (ANI)",
-    "url": "https://www.aninews.in",
-    "origin": "[IND]",
-    "language": "en",
-    "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "corporate",
-      "economic"
-    ]
-  },
-  {
     "name": "Doordarshan News",
     "url": "https://news.google.com/rss/search?q=site:ddnews.gov.in&hl=en-US&gl=IN&ceid=IN:en",
     "origin": "[IND]",
@@ -4902,21 +3679,6 @@
     "focus": [
       "political",
       "geopolitical",
-      "economic",
-      "health"
-    ]
-  },
-  {
-    "name": "Irish Examiner",
-    "url": "https://www.irishexaminer.com/feed/",
-    "origin": "[IRL]",
-    "language": "en",
-    "bias": 4,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
       "economic",
       "health"
     ]
@@ -5048,35 +3810,6 @@
     ]
   },
   {
-    "name": "RAI News",
-    "url": "https://www.rainews.it/rss/news.xml",
-    "origin": "[ITA]",
-    "language": "it",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Petra — Jordan News Agency",
-    "url": "https://www.petra.gov.jo",
-    "origin": "[JOR]",
-    "language": "ar",
-    "bias": 8,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Petra — Jordan News Agency (English)",
     "url": "https://news.google.com/rss/search?q=site:petra.gov.jo&hl=en-US&gl=JO&ceid=JO:en",
     "origin": "[JOR]",
@@ -5121,53 +3854,6 @@
     ]
   },
   {
-    "name": "Jordan News",
-    "url": "https://jordannews.jo/feed/",
-    "origin": "[JOR]",
-    "language": "en",
-    "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Kyodo News",
-    "url": "https://english.kyodonews.net",
-    "origin": "[JPN]",
-    "language": "en",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Jiji Press",
-    "url": "https://www.jiji.com/eng/",
-    "origin": "[JPN]",
-    "language": "en",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical",
-      "corporate"
-    ]
-  },
-  {
     "name": "Kyodo News (Japanese)",
     "url": "https://news.google.com/rss/search?q=site:nordot.app&hl=ja&gl=JP&ceid=JP:ja",
     "origin": "[JPN]",
@@ -5181,20 +3867,6 @@
       "geopolitical",
       "economic",
       "corporate"
-    ]
-  },
-  {
-    "name": "Kazakh Radio and Television Corporation (Qazaqstan TV)",
-    "url": "https://www.kaztv.kz",
-    "origin": "[KAZ]",
-    "language": "kk",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
     ]
   },
   {
@@ -5218,65 +3890,6 @@
     "origin": "[KAZ]",
     "language": "en",
     "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Vlast.kz",
-    "url": "https://vlast.kz/rss",
-    "origin": "[KAZ]",
-    "language": "ru",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Inform.kz",
-    "url": "https://www.inform.kz/rss/",
-    "origin": "[KAZ]",
-    "language": "ru",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Kenya News Agency",
-    "url": "https://www.kenyanews.go.ke",
-    "origin": "[KEN]",
-    "language": "en",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "The Standard Kenya",
-    "url": "https://www.standardmedia.co.ke",
-    "origin": "[KEN]",
-    "language": "en",
-    "bias": 5,
     "factual": 7,
     "credibility": 7,
     "tier": 2,
@@ -5345,21 +3958,6 @@
     ]
   },
   {
-    "name": "Kuwait News Agency (KUNA) - Arabic",
-    "url": "https://www.kuna.net.kw",
-    "origin": "[KWT]",
-    "language": "ar",
-    "bias": 8,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Al-Qabas",
     "url": "https://news.google.com/rss/search?q=site:alqabas.com&hl=ar&gl=KW&ceid=KW:ar",
     "origin": "[KWT]",
@@ -5401,20 +3999,6 @@
     "focus": [
       "political",
       "economic"
-    ]
-  },
-  {
-    "name": "National News Agency Lebanon (NNA)",
-    "url": "https://www.nna-leb.gov.lb",
-    "origin": "[LBN]",
-    "language": "ar",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
     ]
   },
   {
@@ -5518,21 +4102,6 @@
     ]
   },
   {
-    "name": "Sunday Times Sri Lanka",
-    "url": "https://www.sundaytimes.lk/feed/",
-    "origin": "[LKA]",
-    "language": "en",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "financial"
-    ]
-  },
-  {
     "name": "LRT (Lietuvos nacionalinis radijas ir televizija)",
     "url": "https://www.lrt.lt/?rss",
     "origin": "[LTU]",
@@ -5552,21 +4121,6 @@
     "url": "https://news.google.com/rss/search?q=site:elta.lt&hl=lt&gl=LT&ceid=LT:lt",
     "origin": "[LTU]",
     "language": "lt",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "LETA (Latvian News Agency)",
-    "url": "https://eng.lsm.lv/",
-    "origin": "[LVA]",
-    "language": "lv",
     "bias": 5,
     "factual": 8,
     "credibility": 8,
@@ -5727,54 +4281,6 @@
     ]
   },
   {
-    "name": "Bernama",
-    "url": "https://www.bernama.com/en/rss.php",
-    "origin": "[MYS]",
-    "language": "en",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Bernama (Bahasa Malaysia)",
-    "url": "https://www.bernama.com/bm/rss.php",
-    "origin": "[MYS]",
-    "language": "ms",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Malaysiakini",
-    "url": "https://www.malaysiakini.com/rss",
-    "origin": "[MYS]",
-    "language": "en",
-    "bias": 3,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
     "name": "Malaysiakini (Bahasa Malaysia)",
     "url": "https://news.google.com/rss/search?q=site:malaysiakini.com&hl=ms&gl=MY&ceid=MY:ms",
     "origin": "[MYS]",
@@ -5788,21 +4294,6 @@
       "geopolitical",
       "economic",
       "corporate"
-    ]
-  },
-  {
-    "name": "News Agency of Nigeria (NAN)",
-    "url": "https://www.nan.ng",
-    "origin": "[NGA]",
-    "language": "en",
-    "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
     ]
   },
   {
@@ -5836,21 +4327,6 @@
     ]
   },
   {
-    "name": "Channels Television",
-    "url": "https://www.channelstv.com/feed/",
-    "origin": "[NGA]",
-    "language": "en",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "The Cable Nigeria",
     "url": "https://www.thecable.ng/feed",
     "origin": "[NGA]",
@@ -5863,38 +4339,6 @@
       "political",
       "geopolitical",
       "economic"
-    ]
-  },
-  {
-    "name": "ANP (Algemeen Nederlands Persbureau)",
-    "url": "https://www.anp.nl",
-    "origin": "[NLD]",
-    "language": "nl",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "de Volkskrant",
-    "url": "https://www.volkskrant.nl/nieuws-beter/rss.xml",
-    "origin": "[NLD]",
-    "language": "nl",
-    "bias": 3,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "health"
     ]
   },
   {
@@ -5914,22 +4358,6 @@
     ]
   },
   {
-    "name": "NTB (Norsk Telegrambyrå)",
-    "url": "https://www.ntb.no",
-    "origin": "[NOR]",
-    "language": "no",
-    "bias": 5,
-    "factual": 9,
-    "credibility": 9,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
     "name": "TV 2 Nyheter",
     "url": "https://news.google.com/rss/search?q=site:tv2.no&hl=no&gl=NO&ceid=NO:no",
     "origin": "[NOR]",
@@ -5946,20 +4374,6 @@
     ]
   },
   {
-    "name": "Rastriya Samachar Samiti (RSS)",
-    "url": "https://www.rss.np",
-    "origin": "[NPL]",
-    "language": "ne",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Rastriya Samachar Samiti (RSS) English",
     "url": "https://news.google.com/rss/search?q=site:rss.np&hl=en-US&gl=NP&ceid=NP:en",
     "origin": "[NPL]",
@@ -5970,21 +4384,6 @@
     "tier": 1,
     "focus": [
       "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "My Republica",
-    "url": "https://myrepublica.nagariknetwork.com/feed/",
-    "origin": "[NPL]",
-    "language": "en",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
       "geopolitical"
     ]
   },
@@ -6003,37 +4402,6 @@
     ]
   },
   {
-    "name": "Kantipur Daily",
-    "url": "https://ekantipur.com/feed",
-    "origin": "[NPL]",
-    "language": "ne",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "TVNZ News",
-    "url": "https://www.tvnz.co.nz/news",
-    "origin": "[NZL]",
-    "language": "en",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "health"
-    ]
-  },
-  {
     "name": "Newsroom NZ",
     "url": "https://www.newsroom.co.nz/feed",
     "origin": "[NZL]",
@@ -6047,20 +4415,6 @@
       "economic",
       "geopolitical",
       "health"
-    ]
-  },
-  {
-    "name": "Oman News Agency (ONA) Arabic",
-    "url": "https://www.onanews.com",
-    "origin": "[OMN]",
-    "language": "ar",
-    "bias": 9,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
     ]
   },
   {
@@ -6092,21 +4446,6 @@
     ]
   },
   {
-    "name": "Associated Press of Pakistan (APP)",
-    "url": "https://www.app.com.pk",
-    "origin": "[PAK]",
-    "language": "en",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Pakistan Television Corporation (PTV) News",
     "url": "https://www.ptv.com.pk",
     "origin": "[PAK]",
@@ -6118,35 +4457,6 @@
     "focus": [
       "political",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "Radio Pakistan",
-    "url": "https://www.radio.gov.pk",
-    "origin": "[PAK]",
-    "language": "ur",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "The Express Tribune",
-    "url": "https://tribune.com.pk",
-    "origin": "[PAK]",
-    "language": "en",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "financial"
     ]
   },
   {
@@ -6267,21 +4577,6 @@
     ]
   },
   {
-    "name": "Polska Agencja Prasowa (PAP)",
-    "url": "https://www.pap.pl/rss.xml",
-    "origin": "[POL]",
-    "language": "pl",
-    "bias": 6,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Gazeta Wyborcza",
     "url": "https://news.google.com/rss/search?q=site:wyborcza.pl&hl=pl&gl=PL&ceid=PL:pl",
     "origin": "[POL]",
@@ -6334,67 +4629,6 @@
     "factual": 8,
     "credibility": 8,
     "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Qatar News Agency (QNA)",
-    "url": "https://www.qna.org.qa",
-    "origin": "[QAT]",
-    "language": "en",
-    "bias": 9,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Gulf Times",
-    "url": "https://www.gulf-times.com/rss/",
-    "origin": "[QAT]",
-    "language": "en",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "financial"
-    ]
-  },
-  {
-    "name": "Agerpres",
-    "url": "https://www.agerpres.ro",
-    "origin": "[ROU]",
-    "language": "ro",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Agerpres (English)",
-    "url": "https://www.agerpres.ro/english",
-    "origin": "[ROU]",
-    "language": "en",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
     "focus": [
       "political",
       "geopolitical",
@@ -6455,20 +4689,6 @@
     "factual": 7,
     "credibility": 7,
     "tier": 3,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "RIA Novosti",
-    "url": "https://ria.ru",
-    "origin": "[RUS]",
-    "language": "ru",
-    "bias": 9,
-    "factual": 5,
-    "credibility": 5,
-    "tier": 1,
     "focus": [
       "political",
       "geopolitical"
@@ -6548,21 +4768,6 @@
     ]
   },
   {
-    "name": "RTS - Radiodiffusion Télévision Sénégalaise",
-    "url": "https://www.rts.sn",
-    "origin": "[SEN]",
-    "language": "fr",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Le Soleil",
     "url": "https://news.google.com/rss/search?q=site:lesoleil.sn&hl=fr&gl=SN&ceid=SN:fr",
     "origin": "[SEN]",
@@ -6606,21 +4811,6 @@
     ]
   },
   {
-    "name": "Singapore Government News (gov.sg)",
-    "url": "https://www.gov.sg/rss/news",
-    "origin": "[SGP]",
-    "language": "en",
-    "bias": 8,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "MediaCorp News (meWATCH/Channel 8)",
     "url": "https://news.google.com/rss/search?q=site:mediacorp.sg&hl=en-US&gl=SG&ceid=SG:en",
     "origin": "[SGP]",
@@ -6633,37 +4823,6 @@
       "political",
       "economic",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "Tanjug",
-    "url": "https://www.tanjug.rs",
-    "origin": "[SRB]",
-    "language": "sr",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Radio Television of Serbia (RTS)",
-    "url": "https://www.rts.rs",
-    "origin": "[SRB]",
-    "language": "sr",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "health"
     ]
   },
   {
@@ -6709,21 +4868,6 @@
       "political",
       "economic",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "TASR (Tlačová agentúra Slovenskej republiky)",
-    "url": "https://www.tasr.sk",
-    "origin": "[SVK]",
-    "language": "sk",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
     ]
   },
   {
@@ -6835,21 +4979,6 @@
     ]
   },
   {
-    "name": "Thai News Agency (TNA)",
-    "url": "https://www.mcot.net/",
-    "origin": "[THA]",
-    "language": "th",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Thai PBS",
     "url": "https://news.google.com/rss/search?q=site:thaipbs.or.th&hl=th&gl=TH&ceid=TH:th",
     "origin": "[THA]",
@@ -6950,64 +5079,6 @@
     ]
   },
   {
-    "name": "TRT Haber",
-    "url": "https://www.trthaber.com",
-    "origin": "[TUR]",
-    "language": "tr",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Milliyet",
-    "url": "https://www.milliyet.com.tr",
-    "origin": "[TUR]",
-    "language": "tr",
-    "bias": 7,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic"
-    ]
-  },
-  {
-    "name": "BloombergHT",
-    "url": "https://www.bloomberght.com",
-    "origin": "[TUR]",
-    "language": "tr",
-    "bias": 5,
-    "factual": 8,
-    "credibility": 8,
-    "tier": 3,
-    "focus": [
-      "financial",
-      "economic",
-      "corporate"
-    ]
-  },
-  {
-    "name": "Tanzania Broadcasting Corporation (TBC)",
-    "url": "https://www.tbc.go.tz",
-    "origin": "[TZA]",
-    "language": "sw",
-    "bias": 8,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Tanzanian Affairs (Tanzania Information Services)",
     "url": "https://news.google.com/rss/search?q=site:habari.co.tz&hl=sw&gl=TZ&ceid=TZ:sw",
     "origin": "[TZA]",
@@ -7018,36 +5089,6 @@
     "tier": 1,
     "focus": [
       "political",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "The Citizen Tanzania",
-    "url": "https://www.thecitizen.co.tz/tanzania/news/rss.xml",
-    "origin": "[TZA]",
-    "language": "en",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
-      "geopolitical"
-    ]
-  },
-  {
-    "name": "Mwananchi",
-    "url": "https://www.mwananchi.co.tz/mw/rss.xml",
-    "origin": "[TZA]",
-    "language": "sw",
-    "bias": 5,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 2,
-    "focus": [
-      "political",
-      "economic",
       "geopolitical"
     ]
   },
@@ -7064,21 +5105,6 @@
       "political",
       "economic",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "WAM – Emirates News Agency",
-    "url": "https://www.wam.ae/en",
-    "origin": "[UAE]",
-    "language": "en",
-    "bias": 9,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
     ]
   },
   {
@@ -7192,20 +5218,6 @@
     ]
   },
   {
-    "name": "Ukrinform (State Wire — already excluded)",
-    "url": "https://www.ukrinform.ua",
-    "origin": "[UKR]",
-    "language": "uk",
-    "bias": 7,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
-    ]
-  },
-  {
     "name": "Suspilne (UA:PBC) — Ukrainian",
     "url": "https://suspilne.media",
     "origin": "[UKR]",
@@ -7289,51 +5301,6 @@
       "political",
       "economic",
       "financial"
-    ]
-  },
-  {
-    "name": "Uzbekistan National News Agency (UzA)",
-    "url": "https://uza.uz",
-    "origin": "[UZB]",
-    "language": "uz",
-    "bias": 9,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Uzbekistan National News Agency (UzA) — English",
-    "url": "https://uza.uz/en",
-    "origin": "[UZB]",
-    "language": "en",
-    "bias": 9,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
-    "name": "Uzbekistan National News Agency (UzA) — Russian",
-    "url": "https://uza.uz/ru",
-    "origin": "[UZB]",
-    "language": "ru",
-    "bias": 9,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
     ]
   },
   {
@@ -7424,21 +5391,6 @@
     ]
   },
   {
-    "name": "Vietnam News Agency (VNA)",
-    "url": "https://en.vietnamplus.vn",
-    "origin": "[VNM]",
-    "language": "en",
-    "bias": 9,
-    "factual": 6,
-    "credibility": 6,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic"
-    ]
-  },
-  {
     "name": "Thông tấn xã Việt Nam (TTXVN)",
     "url": "https://news.google.com/rss/search?q=site:baotintuc.vn&hl=vi&gl=VN&ceid=VN:vi",
     "origin": "[VNM]",
@@ -7466,20 +5418,6 @@
       "political",
       "economic",
       "health"
-    ]
-  },
-  {
-    "name": "Yemen News Agency (SABA) - English",
-    "url": "https://www.sabanews.net/en/",
-    "origin": "[YEM]",
-    "language": "en",
-    "bias": 9,
-    "factual": 5,
-    "credibility": 4,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical"
     ]
   },
   {
@@ -7536,22 +5474,6 @@
     "focus": [
       "political",
       "geopolitical"
-    ]
-  },
-  {
-    "name": "South African Broadcasting Corporation (SABC News)",
-    "url": "https://www.sabcnews.com",
-    "origin": "[ZAF]",
-    "language": "en",
-    "bias": 6,
-    "factual": 7,
-    "credibility": 7,
-    "tier": 1,
-    "focus": [
-      "political",
-      "geopolitical",
-      "economic",
-      "health"
     ]
   },
   {
