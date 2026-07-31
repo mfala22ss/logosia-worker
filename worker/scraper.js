@@ -12,6 +12,17 @@ const { isEphemeralLive } = require('./lib/ephemeral-live');
 const { applyOutcomes } = require('./lib/source-health');
 const { categorize } = require('./agents/categorizer');
 
+// Note on the feeds that 403 here but load fine in a browser (measured
+// 2026-07-31): the User-Agent is NOT the cause. Arab News returns 200 to a bare
+// `fetch()` with OR without a UA, and 403 to rss-parser with OR without one.
+// rss-parser v3 issues its request through node's `http` module, which sends
+// almost no headers, and bot filters key on that overall shape rather than on
+// the UA string alone. Setting `headers` here therefore changes nothing — it was
+// tried and measured, so please do not re-add it expecting a fix.
+//
+// The transport that does work is `fetch()` + `parser.parseString()`. It was
+// measured against 15 blocked feeds and recovered exactly ONE, so it is not
+// worth rewriting this path for today. Revisit if the 403 count grows.
 const parser = new RSSParser({
     customFields: {
         item: [

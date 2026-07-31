@@ -4329,7 +4329,7 @@
   },
   {
     "name": "STT (Suomen Tietotoimisto)",
-    "url": "https://www.stt.fi",
+    "url": "https://stt.fi/feed/",
     "origin": "[FIN]",
     "language": "fi",
     "bias": 5,
@@ -4475,7 +4475,7 @@
   },
   {
     "name": "Graphic Online",
-    "url": "https://www.graphic.com.gh",
+    "url": "https://www.graphic.com.gh/?format=feed&type=rss",
     "origin": "[GHA]",
     "language": "en",
     "bias": 5,
@@ -4505,7 +4505,7 @@
   },
   {
     "name": "3News Ghana",
-    "url": "https://3news.com",
+    "url": "https://3news.com/feed.xml",
     "origin": "[GHA]",
     "language": "en",
     "bias": 5,
@@ -5303,7 +5303,7 @@
   },
   {
     "name": "Citizen TV Kenya",
-    "url": "https://www.citizentv.co.ke",
+    "url": "https://www.citizen.digital/feed.xml",
     "origin": "[KEN]",
     "language": "en",
     "bias": 5,
@@ -5461,7 +5461,7 @@
   },
   {
     "name": "Sri Lanka Rupavahini Corporation News",
-    "url": "https://www.rupavahini.lk",
+    "url": "https://rupavahini.lk/feed/",
     "origin": "[LKA]",
     "language": "si",
     "bias": 7,
@@ -5534,7 +5534,7 @@
   },
   {
     "name": "LRT (Lietuvos nacionalinis radijas ir televizija)",
-    "url": "https://www.lrt.lt/",
+    "url": "https://www.lrt.lt/?rss",
     "origin": "[LTU]",
     "language": "lt",
     "bias": 5,
@@ -6223,7 +6223,7 @@
   },
   {
     "name": "RPP Noticias",
-    "url": "https://rpp.pe",
+    "url": "https://rpp.pe/rss",
     "origin": "[PER]",
     "language": "es",
     "bias": 5,
@@ -6534,7 +6534,7 @@
   },
   {
     "name": "APS - Agence de Presse Sénégalaise",
-    "url": "https://www.aps.sn",
+    "url": "https://aps.sn/feed/",
     "origin": "[SEN]",
     "language": "fr",
     "bias": 7,
@@ -7338,7 +7338,7 @@
   },
   {
     "name": "Kun.uz",
-    "url": "https://kun.uz/uz",
+    "url": "https://kun.uz/news/rss?lang=uz",
     "origin": "[UZB]",
     "language": "uz",
     "bias": 7,

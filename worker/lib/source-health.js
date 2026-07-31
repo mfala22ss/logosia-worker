@@ -29,9 +29,25 @@ const { db } = require('./db');
 // broken. Publishers do have multi-hour outages; almost none have 16-hour ones.
 const FAILURE_THRESHOLD = parseInt(process.env.SOURCE_FAILURE_THRESHOLD || '8', 10);
 
-// Above this, blame the network, not the feeds. Sized to be larger than plausible
-// simultaneous independent failures but far smaller than the source list.
+// How many feeds may be retired in a single run. This is a RATE LIMIT on a
+// destructive action, not a safety check — see MASS_FAILURE_RATIO for that.
 const MAX_DISABLES_PER_RUN = parseInt(process.env.MAX_DISABLES_PER_RUN || '10', 10);
+
+// The actual infrastructure-vs-feeds discriminator: what fraction of THIS run's
+// fetches failed.
+//
+// The first version used the absolute eligible count as the safety check — if
+// more than MAX_DISABLES_PER_RUN feeds crossed the threshold, disable nothing.
+// That deadlocked: 87 feeds were genuinely dead, 87 > 10 on every run, so the
+// guard suppressed every disable forever and 0 feeds were ever retired. A backlog
+// larger than the cap could never drain, and the cap could never be reached from
+// above. The guard was permanently on.
+//
+// Rate is the right signal because it answers the question the guard is actually
+// asking. If 400 of 508 feeds fetched fine and 87 failed, the network is
+// demonstrably working and those 87 are dead on their own merits. If 500 of 508
+// failed, it is the network, no matter how many crossed the counter.
+const MASS_FAILURE_RATIO = parseFloat(process.env.MASS_FAILURE_RATIO || '0.5');
 
 // Same 500-id ceiling as the retainer: supabase-js serialises `.in()` into the
 // request URI and ~1000 bigints overruns the gateway's 8KB limit with an opaque 414.
@@ -105,13 +121,24 @@ async function applyOutcomes(outcomes) {
         }
     }
 
-    // Guard 3: mass failure means infrastructure, not feeds.
-    if (eligible.length > MAX_DISABLES_PER_RUN) {
+    // Guard 3: judge the RUN, not the backlog. A run where most fetches succeeded
+    // is strong evidence the network is fine and the failures are the feeds' own.
+    //
+    // Not conclusive, and worth naming the gap: a partial outage — one flaky DNS
+    // resolver, a regional route, a single CDN having a bad hour — could take out
+    // a minority of feeds while the majority sail through, and this rule would
+    // read that as feed death and retire them. That is the residual risk the
+    // per-run cap exists to bound: the worst case is MAX_DISABLES_PER_RUN wrong
+    // retirements, all logged with their reason, all reversible by flipping
+    // `enabled` back. Re-running the seeder restores anything in feeds.json.
+    const failureRatio = outcomes.length ? failed.length / outcomes.length : 0;
+
+    if (failureRatio > MASS_FAILURE_RATIO) {
         console.error(
-            `[source-health] ⚠ ${eligible.length} sources crossed the failure threshold in one run ` +
-            `(cap ${MAX_DISABLES_PER_RUN}). That is an infrastructure fault, not ${eligible.length} ` +
-            `independent feed deaths — disabling NOTHING. Counters are preserved, so if this is real ` +
-            `it will disable them once the count falls under the cap.`
+            `[source-health] ⚠ ${failed.length}/${outcomes.length} fetches failed this run ` +
+            `(${(failureRatio * 100).toFixed(0)}%, threshold ${(MASS_FAILURE_RATIO * 100).toFixed(0)}%). ` +
+            `That is an infrastructure fault, not ${eligible.length} independent feed deaths — ` +
+            `disabling NOTHING. Counters are preserved and will drain once a run succeeds normally.`
         );
         return {
             ok: succeeded.length,
@@ -122,7 +149,22 @@ async function applyOutcomes(outcomes) {
         };
     }
 
-    for (const { source, failures, reason } of eligible) {
+    // Drain worst-first so the most-certainly-dead go first, capped per run. A
+    // large backlog now shrinks by MAX_DISABLES_PER_RUN each run instead of
+    // being suppressed wholesale, and the per-run cap still bounds the damage of
+    // a wrong call to something a single revert can undo.
+    eligible.sort((a, b) => b.failures - a.failures);
+    const toDisable = eligible.slice(0, MAX_DISABLES_PER_RUN);
+    const deferred  = eligible.length - toDisable.length;
+
+    if (deferred > 0) {
+        console.warn(
+            `[source-health] ${eligible.length} feeds eligible; retiring the ${toDisable.length} worst ` +
+            `this run, ${deferred} deferred to later runs.`
+        );
+    }
+
+    for (const { source, failures, reason } of toDisable) {
         const { error } = await db.from('sources').update({
             enabled:         false,
             disabled_at:     now,
