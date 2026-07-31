@@ -1,0 +1,28 @@
+# Code owners — required reviewers for the files that hold the keys.
+#
+# This repository is PUBLIC. Anyone may fork it and open a pull request. GitHub
+# already refuses to run a fork's workflow definitions with this repo's secrets,
+# so a PR that edits .github/workflows/ cannot execute against them — but it
+# CAN be merged, and after merging it runs with everything.
+#
+# These entries make that path require an explicit review from the owner.
+# Effective only with branch protection on main requiring code-owner review;
+# without it, CODEOWNERS requests a review and nothing enforces it. See the
+# "Self-maintenance" section of README.md.
+
+# Everything, by default.
+*                       @mfala22ss
+
+# The security-critical set, listed separately so the intent survives a future
+# broadening of the rule above:
+#
+#   workflows        — hold secrets, and claude.yml grants an agent contents:write
+#   CODEOWNERS       — anyone who can edit this file can remove every other rule
+#   .env.example     — the documented shape of the credential set
+#   lib/db.js        — the only module that constructs a service-role client
+#   agents/retainer  — the sole defence against the disk-full outage of 2026-07-20
+/.github/workflows/     @mfala22ss
+/.github/CODEOWNERS     @mfala22ss
+/.env.example           @mfala22ss
+/worker/lib/db.js       @mfala22ss
+/worker/agents/retainer.js @mfala22ss

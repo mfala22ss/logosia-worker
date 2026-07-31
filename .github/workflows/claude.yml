@@ -30,11 +30,29 @@ concurrency:
 
 jobs:
   claude:
+    # Two independent gates, because this repo is PUBLIC and anyone on the
+    # internet can open an issue or comment on one.
+    #
+    # Gate 1 (the action's own): claude-code-action requires the triggering user
+    # to have write access to the repository. It is on by default with no opt-out,
+    # and it is the load-bearing control.
+    #
+    # Gate 2 (below): author_association == 'OWNER' | 'COLLABORATOR'. Defence in
+    # depth — it is evaluated by GitHub before the job starts, so an unauthorised
+    # trigger never reaches the action, never starts a runner, and never costs a
+    # token. Note the watchdog opens its issues via GITHUB_TOKEN, which reports
+    # as OWNER on a personal repo, so the self-heal loop still works.
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') &&
+          (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR')) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude') &&
+          (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude') &&
+          (github.event.review.author_association == 'OWNER' || github.event.review.author_association == 'COLLABORATOR')) ||
+        (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')) &&
+          (github.event.issue.author_association == 'OWNER' || github.event.issue.author_association == 'COLLABORATOR'))
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -56,6 +74,31 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          # ⚠️ MUST STAY false ON THIS PUBLIC REPO.
+          #
+          # show_full_output dumps every Claude Code message into the job log,
+          # including raw tool outputs and API responses that may carry tokens or
+          # credentials. Actions logs on a public repository are world-readable
+          # and downloadable by anyone. false is already the default; it is pinned
+          # explicitly so that turning it on has to be a deliberate, reviewable
+          # edit rather than an accident.
+          #
+          # THE GAP THIS DOES NOT CLOSE: the action's own docs state full output is
+          # "automatically enabled when GitHub Actions debug mode is active (when
+          # ACTIONS_STEP_DEBUG secret is set to true)". Whether this explicit false
+          # overrides that is NOT documented, so do not rely on it — never set
+          # ACTIONS_STEP_DEBUG on this repo. If you need debug output, make the
+          # repo private first, or reproduce locally.
+          show_full_output: false
+
+          # Only the owner's comments are passed to Claude as CONTEXT. This does
+          # NOT control who may trigger the action — the write-permission check
+          # above does that. What it limits is prompt injection: anyone can
+          # comment on a public issue, and without this their text would be fed
+          # to an agent holding contents:write.
+          include_comments_by_actor: "mfala22ss"
+
           additional_permissions: |
             actions: read
           claude_args: '--allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(npm ci),Bash(npm run watchdog),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"'
