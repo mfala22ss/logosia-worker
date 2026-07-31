@@ -41,6 +41,11 @@ const STAGES = [
 
     { name: 'translator', run: () => translator.run({ limit: 150 }) },
     { name: 'summarizer', run: () => summarizer.run({ limit: 20 }) },
+
+    // Independent of the article pipeline — it touches live_channels, not
+    // articles. Runs last because nothing downstream needs it and it talks to a
+    // third party: if YouTube is having a bad day, the news has already landed.
+    { name: 'live-resolver', run: () => liveResolver.run() },
 ];
 
 // Per-stage detail is capped before it goes into the worker_runs jsonb column.
