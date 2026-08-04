@@ -16,36 +16,47 @@ const clusterer        = require('./agents/clusterer');
 const translator       = require('./agents/translator');
 const categorizer      = require('./agents/categorizer');
 const summarizer       = require('./agents/summarizer');
+const liveResolver     = require('./agents/live-resolver');
 
 const INTERVAL_MIN = parseInt(process.env.SCRAPE_INTERVAL_MIN || '30', 10);
 const ONCE         = process.argv.includes('--once');
 
 // Stages run in order; each is isolated so one failure does not abort the rest.
+//
+// Each entry holds the agent MODULE, not a closure that calls it. The difference
+// is when a mistake surfaces. `run: () => liveResolver.run()` with no matching
+// require is valid syntax and loads clean — it throws ReferenceError only when
+// the stage is actually invoked, which is once an hour on a runner nobody is
+// watching. That shipped on 2026-07-31 and the live-resolver stage failed every
+// run for four days while the pipeline reported success. `agent: liveResolver`
+// is evaluated when this array is constructed, so the same mistake now throws at
+// require time — caught by `node worker/scripts/smoke.js` in CI, and by running
+// the worker locally at all.
 const STAGES = [
     // Retention runs first so the volume has headroom before the scrape inserts.
     // Running it last would mean every run peaks at the pre-cleanup size, which is
     // what filled the 500MB free-tier disk on 2026-07-20 and took the site down.
-    { name: 'retainer', run: () => retainer.run() },
+    { name: 'retainer', agent: retainer },
 
-    { name: 'scrape',  run: () => scrape() },
-    { name: 'curator', run: () => curator.run({ limit: 500 }) },
+    { name: 'scrape',  agent: { run: scrape } },
+    { name: 'curator', agent: curator, args: { limit: 500 } },
 
     // Clusterer refines importance_score for the recent window using multi-source
     // corroboration — must run after curator (which sets the baseline + quality).
-    { name: 'clusterer', run: () => clusterer.run() },
+    { name: 'clusterer', agent: clusterer },
 
     // Categorization is keyword matching — free and fast. The old limit of 300/run
     // could not keep up with ~20k articles ingested per run, which left the site's
     // category filters matching almost nothing.
-    { name: 'categorizer', run: () => categorizer.run({ limit: 5000 }) },
+    { name: 'categorizer', agent: categorizer, args: { limit: 5000 } },
 
-    { name: 'translator', run: () => translator.run({ limit: 150 }) },
-    { name: 'summarizer', run: () => summarizer.run({ limit: 20 }) },
+    { name: 'translator', agent: translator, args: { limit: 150 } },
+    { name: 'summarizer', agent: summarizer, args: { limit: 20 } },
 
     // Independent of the article pipeline — it touches live_channels, not
     // articles. Runs last because nothing downstream needs it and it talks to a
     // third party: if YouTube is having a bad day, the news has already landed.
-    { name: 'live-resolver', run: () => liveResolver.run() },
+    { name: 'live-resolver', agent: liveResolver },
 ];
 
 // Per-stage detail is capped before it goes into the worker_runs jsonb column.
@@ -80,7 +91,7 @@ async function pipeline() {
     let failed = 0;
     for (const stage of STAGES) {
         try {
-            const result = await stage.run();
+            const result = await stage.agent.run(stage.args);
             stages[stage.name] = { ok: true, result: summarizeResult(result) };
             if (result !== undefined) console.log(`[orch] ${stage.name}: ${JSON.stringify(result)}`);
         } catch (e) {
