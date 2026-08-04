@@ -311,6 +311,75 @@ async function checkStageFailures() {
     });
 }
 
+// ── Outcome checks ─────────────────────────────────────────────────────────
+// Everything above asks whether the pipeline RAN. This asks whether the thing a
+// reader actually looks at is there.
+//
+// On 2026-07-31 the live-resolver stage began throwing `liveResolver is not
+// defined` on every run. checkStageFailures caught it and opened issue #4 within
+// 8.5 hours, so detection was never the problem. It became a four-day outage
+// because nothing translated "a stage is failing" into "the Live page is serving
+// zero channels", and no alert channel was configured to say either out loud.
+//
+// This closes the gap from the other end. It reads the same column the page
+// reads and applies the same rule, so it fails whenever readers see an empty
+// page — whatever stage, bug, or upstream change caused it.
+//
+// ⚠️ COUPLED to LIVE_STALE_AFTER_MINUTES in logosia-web/app/live/page.tsx.
+// That page hides any channel resolved longer ago than its own window. If the
+// constant there moves, move the comment here with it.
+//
+// The threshold below is deliberately WIDER than the page's 180 minutes, and the
+// gap is calibration rather than slack. Scheduled runs landed 1h36m–4h05m apart
+// over the 24h measured on 2026-08-04, because GitHub throttles cron on this
+// repo heavily — so a perfectly healthy pipeline routinely leaves the page stale
+// past 180 minutes. Alerting at the page's own threshold would fire on healthy
+// cadence about a third of the time, and an alarm that cries wolf gets muted,
+// which is the mechanism that hid the last outage.
+//
+// 360 minutes clears the worst observed gap with margin and would still have
+// caught the four-day failure within six hours. The page going dark during a
+// HEALTHY gap is a real defect too, but it is a cadence defect — the fix is a
+// scheduler that fires when asked, not a tighter alarm here.
+const LIVE_STALE_MINUTES = parseInt(process.env.WATCHDOG_LIVE_STALE_MINUTES || '360', 10);
+
+async function checkLiveFreshness() {
+    const { data, error } = await db
+        .from('live_channels')
+        .select('resolved_at')
+        .eq('enabled', true);
+
+    if (error) return check('live_freshness', false, { detail: `query failed: ${error.message}` });
+
+    // No enabled channels is a deliberate configuration, not a fault. Asserting
+    // freshness on an empty set would report a permanent failure nobody can fix.
+    if (!data.length) return check('live_freshness', true, { detail: 'no channels enabled' });
+
+    const stamps = data.map(r => r.resolved_at).filter(Boolean);
+
+    // Enabled channels that have NEVER been resolved is a distinct fault from a
+    // stale one, and it is worse: it means the resolver has not run successfully
+    // even once against this table.
+    if (!stamps.length) {
+        return check('live_freshness', false, {
+            severity: 'critical',
+            actionable: true,
+            detail: `${data.length} channel(s) enabled and NONE has ever been resolved. ` +
+                    `The Live page is serving zero tiles. Check the live-resolver stage.`,
+        });
+    }
+
+    const freshestMins = Math.min(...stamps.map(minutesSince));
+    return check('live_freshness', freshestMins <= LIVE_STALE_MINUTES, {
+        severity: 'critical',
+        actionable: true,
+        detail: `Newest live_channels.resolved_at is ${freshestMins.toFixed(0)} min old ` +
+                `(limit ${LIVE_STALE_MINUTES} min). The Live page hides channels resolved ` +
+                `longer ago than its own staleness window, so tiles are dark for readers. ` +
+                `Check the live-resolver stage of the most recent worker run.`,
+    });
+}
+
 // ── GitHub escalation ──────────────────────────────────────────────────────
 const GITHUB_API   = 'https://api.github.com';
 const REPO         = process.env.GITHUB_REPOSITORY;
@@ -467,6 +536,7 @@ async function main() {
             checkSite(),
             checkProtectedSources(),
             checkStageFailures(),
+            checkLiveFreshness(),
         ])];
     }
 
