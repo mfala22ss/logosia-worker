@@ -68,6 +68,34 @@ function assertStageOrder() {
     console.log(`  ✓ stage order: ${order.join(' → ')}`);
 }
 
+// Every stage must carry a callable agent.
+//
+// The orchestrator swallows a per-stage throw by design — one bad stage must not
+// abort the other seven. That safety property is also a blindfold: a stage wired
+// to nothing fails identically to a stage whose API call timed out, and the run
+// still exits 0. live-resolver was wired to an undeclared identifier on
+// 2026-07-31 and failed silently for four days; the site's Live page served zero
+// channels the whole time because the columns that stage writes stayed null.
+//
+// Holding the module in STAGES rather than a closure means a missing require now
+// throws when `../index` is required — loadAll() above already covers that case.
+// This check covers the rest of the shape: a stage present but wired to a module
+// that exports no run(), which loads clean and would fail the same silent way.
+function assertStageAgents() {
+    const { STAGES } = require('../index');
+
+    for (const stage of STAGES) {
+        assert.ok(
+            stage.agent && typeof stage.agent.run === 'function',
+            `stage "${stage.name}" has no callable agent.run() — it would throw at ` +
+            'invocation time on the hourly runner, where a per-stage throw is caught ' +
+            'and the run still reports success.',
+        );
+    }
+
+    console.log(`  ✓ ${STAGES.length} stages have a callable agent.run()`);
+}
+
 function main() {
     const assertOrderOnly = process.argv.includes('--assert-stage-order');
 
@@ -81,6 +109,10 @@ function main() {
     console.log('[smoke] loading modules…');
     loadAll();
     console.log('[smoke] ✓ all modules loaded');
+
+    console.log('[smoke] asserting stage wiring…');
+    assertStageAgents();
+    console.log('[smoke] ✓ stage wiring OK');
 }
 
 try {
