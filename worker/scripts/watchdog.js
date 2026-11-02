@@ -540,25 +540,36 @@ async function findOpenIssue(signature) {
 
 // "Close this issue when the underlying condition clears" was, until now, only
 // a line in the issue body — nothing enforced it, so resolved watchdog issues
-// sat open until a human noticed. This closes the gap: when every check has
-// just passed, every condition that could have opened a watchdog issue has
-// cleared by definition, because the only path to a reduced check set is
-// dbCheck failing (see main()), which is itself a failure. So any still-open
-// `watchdog`-labelled issue at that point is stale.
+// sat open until a human noticed.
+//
+// An issue is closed when every check named in its signature ran THIS tick and
+// passed. It is judged per issue, not on "all checks passed", because a
+// standing non-actionable failure (e.g. alert_channels while no channel secret
+// is set) would otherwise block every other issue from ever closing. A check
+// that did not run (the reduced set when the database is down) never counts as
+// passing, so an outage cannot close the issue that tracks it.
 //
 // Opt out with WATCHDOG_AUTO_CLOSE=false to close these by hand instead —
 // matches the WATCHDOG_* threshold envs already configured this way.
 const AUTO_CLOSE = process.env.WATCHDOG_AUTO_CLOSE !== 'false';
+const SIGNATURE_RE = /<!-- watchdog-signature: ([^ ]+) -->/;
 
-async function closeResolvedIssues() {
+function issueHasCleared(issue, checks) {
+    const match = SIGNATURE_RE.exec(issue.body || '');
+    if (!match) return false;
+    const passed = new Set(checks.filter(c => c.ok).map(c => c.name));
+    return match[1].split('+').every(name => passed.has(name));
+}
+
+async function closeResolvedIssues(checks) {
     if (!AUTO_CLOSE || !REPO || !TOKEN) return;
 
     const open = await github(`/repos/${REPO}/issues?state=open&labels=${ISSUE_LABEL}&per_page=100`);
-    for (const issue of open) {
+    for (const issue of open.filter(i => !i.pull_request && issueHasCleared(i, checks))) {
         await github(`/repos/${REPO}/issues/${issue.number}/comments`, {
             method: 'POST',
             body: JSON.stringify({
-                body: `Watchdog: all checks passed again as of ${new Date().toISOString()}. Closing automatically — it reopens if the condition recurs.`,
+                body: `Watchdog: every check this issue tracks passed again as of ${new Date().toISOString()}. Closing automatically — a new issue opens if the condition recurs.`,
             }),
         });
         await github(`/repos/${REPO}/issues/${issue.number}`, {
@@ -625,7 +636,7 @@ Read \`AGENTS.md\` first. Then, specifically:
   code, say so in a comment and open **no PR**. A PR that cannot fix the problem is worse than none —
   it makes the incident look handled.
 
-This issue closes automatically once every watchdog check passes again; a new one opens if the
+This issue closes automatically once every check it tracks passes again; a new one opens if the
 condition recurs. Set \`WATCHDOG_AUTO_CLOSE=false\` (repo variable/secret) to disable that and close
 issues by hand instead.`;
 }
@@ -706,16 +717,17 @@ async function main() {
         console.log(`[watchdog] ${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ' — ' + c.detail.split('\n')[0] : ''}`);
     }
 
+    try {
+        await closeResolvedIssues(checks);
+    } catch (e) {
+        // Do not fail the run over a close that didn't take — the condition
+        // really is resolved, and a human can close the issue by hand.
+        console.error('[watchdog] auto-close failed:', e.message);
+    }
+
     const failures = checks.filter(c => !c.ok);
     if (!failures.length) {
         console.log('[watchdog] ✓ all checks passed');
-        try {
-            await closeResolvedIssues();
-        } catch (e) {
-            // Do not fail the run over a close that didn't take — the condition
-            // really is resolved, and a human can close the issue by hand.
-            console.error('[watchdog] auto-close failed:', e.message);
-        }
         return 0;
     }
 
