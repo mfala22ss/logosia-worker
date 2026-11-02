@@ -2408,7 +2408,7 @@
   },
   {
     "name": "AZERTAC (Azerbaijan State Telegraph Agency)",
-    "url": "https://azertag.az",
+    "url": "https://azertag.az/rss",
     "origin": "[AZE]",
     "language": "az",
     "bias": 9,
@@ -2423,7 +2423,7 @@
   },
   {
     "name": "AZERTAC English",
-    "url": "https://azertag.az/en",
+    "url": "https://azertag.az/en/rss",
     "origin": "[AZE]",
     "language": "en",
     "bias": 9,
@@ -4518,7 +4518,7 @@
   },
   {
     "name": "Andina",
-    "url": "https://andina.pe",
+    "url": "https://andina.pe/agencia/rss.aspx",
     "origin": "[PER]",
     "language": "es",
     "bias": 6,
