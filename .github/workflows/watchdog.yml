@@ -22,7 +22,8 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      issues: write   # opens the @claude issue that triggers claude.yml
+      issues: write   # opens, comments on and auto-closes watchdog issues
+      actions: write  # dispatches claude.yml for a new actionable issue (see below)
     steps:
       - uses: actions/checkout@v4
 
@@ -34,6 +35,7 @@ jobs:
       - run: npm ci
 
       - name: Run watchdog
+        id: watchdog
         run: npm run watchdog
         env:
           SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
@@ -55,3 +57,21 @@ jobs:
           GROQ_KEY_3:                ${{ secrets.GROQ_KEY_3 }}
 
           GITHUB_TOKEN:              ${{ secrets.GITHUB_TOKEN }}
+
+      # Summon the repair agent for a NEW actionable issue.
+      #
+      # The @claude mention in the issue body cannot do this on its own: the issue
+      # is created with GITHUB_TOKEN, and GitHub starts no workflow from an event
+      # GITHUB_TOKEN created (workflow_dispatch and repository_dispatch are the
+      # only exceptions). Until 2026-11-02 that meant watchdog issues #11 to #22
+      # never started an agent at all. Dispatching explicitly closes that gap.
+      #
+      # Runs only when watchdog.js reports a newly opened actionable issue, so an
+      # acknowledged condition does not start an agent every 15 minutes.
+      # always(): watchdog.js exits 1 for a new condition, which is exactly when
+      # this must still run.
+      - name: Dispatch repair agent
+        if: always() && steps.watchdog.outputs.repair_issue != ''
+        run: gh workflow run claude.yml --repo "$GITHUB_REPOSITORY" -f issue="${{ steps.watchdog.outputs.repair_issue }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
