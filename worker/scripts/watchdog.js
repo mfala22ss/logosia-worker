@@ -677,6 +677,14 @@ async function escalateToGitHub(failures, allChecks) {
     });
 
     console.log(`[watchdog] opened issue #${issue.number} — ${issue.html_url}`);
+
+    // Hand the issue number to watchdog.yml, which dispatches claude.yml. The
+    // @claude mention in the body cannot start the agent by itself: GitHub runs
+    // no workflow for an event created with GITHUB_TOKEN. Only actionable issues
+    // get an agent; infrastructure-only ones wait for a human (see issueBody).
+    if (actionable && process.env.GITHUB_OUTPUT) {
+        require('fs').appendFileSync(process.env.GITHUB_OUTPUT, `repair_issue=${issue.number}\n`);
+    }
     return { issue, alreadyOpen: false };
 }
 
