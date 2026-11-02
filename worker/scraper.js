@@ -20,9 +20,10 @@ const { categorize } = require('./agents/categorizer');
 // the UA string alone. Setting `headers` here therefore changes nothing — it was
 // tried and measured, so please do not re-add it expecting a fix.
 //
-// The transport that does work is `fetch()` + `parser.parseString()`. It was
-// measured against 15 blocked feeds and recovered exactly ONE, so it is not
-// worth rewriting this path for today. Revisit if the 403 count grows.
+// The transport that does work is `fetch()` + `parser.parseString()`. Measured
+// 2026-07-31 it recovered one of 15 blocked feeds; on 2026-11-02 it also
+// recovered AZERTAC (both feeds), so fetchFeed() now falls back to it on an HTTP
+// rejection rather than replacing parseURL outright.
 const parser = new RSSParser({
     customFields: {
         item: [
@@ -38,6 +39,7 @@ const parser = new RSSParser({
 });
 
 const FETCH_CONCURRENCY = 8;
+const FEED_TIMEOUT_MS = 12000;
 
 // PostgREST caps any single response at 1000 rows, so an unranged select silently
 // truncates the source list rather than erroring. Page through explicitly.
@@ -66,16 +68,41 @@ function isFresh(dateStr) {
 // entire source list during a transient outage.
 async function fetchFeed(source) {
     try {
-        const parsed = await Promise.race([
-            parser.parseURL(source.feed_url),
-            new Promise((_, rej) => setTimeout(() => rej(new Error('Feed timeout')), 12000)),
-        ]);
+        const parsed = await withTimeout(parser.parseURL(source.feed_url));
         return { source, ok: true, items: parsed.items || [] };
     } catch (e) {
         const status = e.message.includes('timeout') ? 'timeout'
                      : e.message.includes('Status') ? 'http_error'
                      : 'parse_error';
+        // A bot filter that rejects rss-parser's bare `http` request (see the note
+        // above the parser) often accepts fetch(). Retry ONLY on an HTTP rejection:
+        // a timeout or a parse error would fail the same way twice and double the
+        // run's wall time. Same RSS URL, same parser — still RSS only, never HTML.
+        // Recovers AZERTAC and AZERTAC English (400 to parseURL, 200 to fetch,
+        // measured 2026-11-02).
+        if (status === 'http_error') {
+            const recovered = await fetchViaFetch(source);
+            if (recovered) return recovered;
+        }
         return { source, ok: false, status, error: e.message };
+    }
+}
+
+function withTimeout(promise) {
+    return Promise.race([
+        promise,
+        new Promise((_, rej) => setTimeout(() => rej(new Error('Feed timeout')), FEED_TIMEOUT_MS)),
+    ]);
+}
+
+async function fetchViaFetch(source) {
+    try {
+        const res = await fetch(source.feed_url, { signal: AbortSignal.timeout(FEED_TIMEOUT_MS) });
+        if (!res.ok) return null;
+        const parsed = await parser.parseString(await res.text());
+        return { source, ok: true, items: parsed.items || [] };
+    } catch {
+        return null;
     }
 }
 
