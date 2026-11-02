@@ -502,6 +502,51 @@ async function checkCredentials() {
     });
 }
 
+// ── Scheduled workflows still enabled ──────────────────────────────────────
+// On 2026-10-28 GitHub disabled News Worker and Premium Sources Scraper with
+// state `disabled_inactivity`: on a public repo, scheduled workflows are switched
+// off after 60 days with no repository activity. Nothing failed. The runs just
+// stopped, every check that reads worker_runs went quiet with them, and the site
+// served no new articles for five days before a human noticed.
+//
+// So every tick this (a) re-enables any of these that GitHub has disabled and
+// fails the check loudly, so a human hears about it even though it self-healed,
+// and (b) re-issues "enable" on the ones still active. (b) is a best-effort
+// keepalive: whether the enable call resets GitHub's 60-day inactivity timer is
+// NOT verified, so (a) is the guarantee and (b) is only a hope. The watchdog
+// cannot revive itself once disabled; a run of this check is proof it is alive.
+//
+// Not actionable: the fix is automatic, and the cause is GitHub policy, not code.
+const SCHEDULED_WORKFLOWS = ['worker.yml', 'premium-scraper.yml', 'watchdog.yml'];
+
+async function checkWorkflowsEnabled() {
+    if (!REPO || !TOKEN) {
+        return check('workflows_enabled', true, { detail: 'skipped: no GITHUB_REPOSITORY/GITHUB_TOKEN' });
+    }
+
+    const revived = [];
+    const failed  = [];
+    for (const file of SCHEDULED_WORKFLOWS) {
+        try {
+            const wf = await github(`/repos/${REPO}/actions/workflows/${file}`);
+            await github(`/repos/${REPO}/actions/workflows/${file}/enable`, { method: 'PUT' });
+            if (wf.state !== 'active') revived.push(`${file} (was ${wf.state})`);
+        } catch (e) {
+            failed.push(`${file}: ${e.message}`);
+        }
+    }
+
+    const problems = [];
+    if (revived.length) problems.push(`Re-enabled ${revived.join(', ')}. Scheduled runs had stopped; check how long the gap was.`);
+    if (failed.length)  problems.push(`Could not check or enable: ${failed.join('; ')}`);
+
+    return check('workflows_enabled', problems.length === 0, {
+        severity: 'critical',
+        actionable: false,
+        detail: problems.length ? problems.join(' ') : `all ${SCHEDULED_WORKFLOWS.length} scheduled workflows active`,
+    });
+}
+
 // ── GitHub escalation ──────────────────────────────────────────────────────
 const GITHUB_API   = 'https://api.github.com';
 const REPO         = process.env.GITHUB_REPOSITORY;
@@ -520,7 +565,8 @@ async function github(path, init = {}) {
         },
     });
     if (!res.ok) throw new Error(`GitHub ${init.method || 'GET'} ${path} → ${res.status} ${(await res.text()).slice(0, 300)}`);
-    return res.json();
+    // 204 No Content (e.g. enabling a workflow) has no body to parse.
+    return res.status === 204 ? null : res.json();
 }
 
 // A stable signature over WHICH checks are failing, not their detail text. Detail
@@ -705,7 +751,7 @@ async function main() {
     // silent outage.
     let checks;
     if (!dbCheck.ok) {
-        checks = [dbCheck, await checkSite(), await checkAlertChannels(), await checkCredentials()];
+        checks = [dbCheck, await checkSite(), await checkAlertChannels(), await checkCredentials(), await checkWorkflowsEnabled()];
     } else {
         checks = [dbCheck, ...await Promise.all([
             checkScheduler(),
@@ -718,6 +764,7 @@ async function main() {
             checkLiveFreshness(),
             checkAlertChannels(),
             checkCredentials(),
+            checkWorkflowsEnabled(),
         ])];
     }
 

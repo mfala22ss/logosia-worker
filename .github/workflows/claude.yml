@@ -156,4 +156,4 @@ jobs:
             actions: read
 
           claude_args: >-
-            --allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue close:*),Bash(gh issue comment:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(git checkout:*),Bash(git switch:*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(npm ci),Bash(npm run smoke),Bash(npm run watchdog),Bash(npm run scrape),Bash(npm run db:seed-sources),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"
+            --allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue close:*),Bash(gh issue comment:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(git checkout:*),Bash(git switch:*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(npm ci),Bash(npm run smoke),Bash(npm run watchdog),Bash(npm run scrape),Bash(npm run db:seed-sources),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"
