@@ -101,4 +101,5 @@ jobs:
 
           additional_permissions: |
             actions: read
-          claude_args: '--allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(npm ci),Bash(npm run watchdog),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"'
+                   claude_args: >-
+            --allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue close:*),Bash(gh issue comment:*),Bash(npm ci),Bash(npm run smoke),Bash(npm run watchdog),Bash(npm run scrape),Bash(npm run db:seed-sources),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"
