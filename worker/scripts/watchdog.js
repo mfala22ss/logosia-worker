@@ -380,6 +380,128 @@ async function checkLiveFreshness() {
     });
 }
 
+// ── Alert channel configuration ────────────────────────────────────────────
+// On 2026-07-31 detection worked (checkStageFailures opened issue #4 within
+// 8.5h) but delivery didn't: no alert channel secret was set, so alert() below
+// logged "NO CHANNEL DELIVERED" to a runner log nobody reads, and the Live page
+// stayed dark for 4 days 9 hours before a human happened to look. Presence was
+// never asserted on, so nothing ever failed loudly about it.
+//
+// This reads the exact same env vars as worker/lib/alert.js — KEEP THESE TWO
+// LISTS IN SYNC. Drift here (a channel added to alert.js but not mirrored here,
+// or vice versa) reintroduces the identical bug: a channel that looks
+// configured to one and invisible to the other.
+async function checkAlertChannels() {
+    const configured = [
+        process.env.NTFY_TOPIC,
+        process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID,
+        process.env.DISCORD_WEBHOOK_URL,
+    ].filter(Boolean);
+
+    return check('alert_channels', configured.length > 0, {
+        severity: 'warning',
+        // Not actionable: this is a secret only the repo owner can set, not a
+        // bug a PR can fix. Marking it actionable would summon Claude to "fix"
+        // something it has no access to fix — see AGENTS.md.
+        actionable: false,
+        detail: 'No alert channel is configured — set at least one of NTFY_TOPIC, ' +
+                'TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID, or DISCORD_WEBHOOK_URL as a ' +
+                'repository secret. Without one, the watchdog can detect an outage and ' +
+                'have nowhere to report it except this GitHub issue.',
+    });
+}
+
+// ── Credential validity ─────────────────────────────────────────────────────
+// The other half of the same outage: `claude.yml` had no CLAUDE_CODE_OAUTH_TOKEN,
+// so the repair arm failed at startup on every trigger. Presence checks would
+// have missed that too — an expired or revoked token is PRESENT and useless.
+//
+// This asserts on the two credentials nothing else here exercises:
+//   - GROQ_KEY[_2/_3]: a dead key does not fail a run — worker/lib/ai.js
+//     catches the error and callers silently get `null` back, so the
+//     translator/categorizer/summarizer just degrade with no red check
+//     anywhere (the exact "green run, broken output" shape as the 98.9%
+//     mis-categorization incident, just with a different root cause).
+//   - GITHUB_TOKEN: this is the ONLY surviving escalation channel when
+//     alert_channels above is failing. escalateToGitHub() below swallows a
+//     token failure and just logs it, so a dead token silently drops the
+//     last channel — nobody would ever know this ran and did nothing.
+//
+// Supabase's credential is intentionally NOT re-tested here: checkDatabase()
+// already makes an authenticated call every run, so an invalid
+// SUPABASE_SERVICE_ROLE_KEY already fails that check.
+//
+// One cheap authenticated call per credential, and nothing that spends money:
+// for Groq this hits the models-list endpoint, never a completion. A network
+// blip and an invalid credential must not look the same — a DNS hiccup must
+// not page — so only a definitive 401/403 counts as failure; anything else
+// (timeout, 5xx, DNS) is inconclusive and does not fail the check.
+const CREDENTIAL_TIMEOUT_MS = 8_000;
+
+async function probeCredential(url, headers) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), CREDENTIAL_TIMEOUT_MS);
+    try {
+        const res = await fetch(url, { headers, signal: controller.signal });
+        if (res.status === 401 || res.status === 403) return 'invalid';
+        return 'ok';
+    } catch {
+        // Timeout, DNS failure, TLS error, etc. — cannot distinguish "key is
+        // bad" from "network had a bad moment", so it must not read as a
+        // credential failure.
+        return 'inconclusive';
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+async function checkCredentials() {
+    const groqKeys = [process.env.GROQ_KEY, process.env.GROQ_KEY_2, process.env.GROQ_KEY_3]
+        .filter(Boolean);
+
+    const groqResults = await Promise.all(
+        groqKeys.map(k => probeCredential('https://api.groq.com/openai/v1/models', { authorization: `Bearer ${k}` }))
+    );
+    const invalidGroq = groqResults.filter(r => r === 'invalid').length;
+
+    const githubResult = (REPO && TOKEN)
+        ? await probeCredential(`${GITHUB_API}/repos/${REPO}`, {
+              authorization: `Bearer ${TOKEN}`,
+              accept: 'application/vnd.github+json',
+          })
+        : 'skipped';
+
+    const problems = [];
+    if (groqKeys.length === 0) {
+        problems.push(
+            'no GROQ_KEY (or _2/_3) is set — worker/lib/ai.js silently skips every AI ' +
+            'call, so the translator/categorizer/summarizer stages run and report ok ' +
+            'while doing nothing.'
+        );
+    } else if (invalidGroq > 0) {
+        problems.push(
+            `${invalidGroq}/${groqKeys.length} GROQ_KEY* rejected the models-list call ` +
+            'with 401/403 — rotate the expired/revoked key(s) in repository secrets.'
+        );
+    }
+
+    if (githubResult === 'invalid') {
+        problems.push(
+            'GITHUB_TOKEN rejected the repo lookup with 401/403 — issue escalation ' +
+            '(the last channel left standing when alert_channels is unconfigured) is ' +
+            'silently failing every run.'
+        );
+    }
+
+    return check('credentials', problems.length === 0, {
+        severity: 'warning',
+        // Not actionable: rotating or re-scoping a credential is a secrets change
+        // only the owner can make, never a code diff.
+        actionable: false,
+        detail: problems.length ? problems.join(' ') : 'all configured credentials authenticated',
+    });
+}
+
 // ── GitHub escalation ──────────────────────────────────────────────────────
 const GITHUB_API   = 'https://api.github.com';
 const REPO         = process.env.GITHUB_REPOSITORY;
@@ -524,9 +646,14 @@ async function main() {
     // when the database is gone. That combination — DB down, site down — is the
     // exact 2026-07-20 signature, and stating both is what makes the alert
     // diagnostic rather than merely noisy.
+    // alert_channels and credentials run in BOTH branches: neither depends on
+    // the database, and the outage scenario where the database is down is
+    // exactly when a dead alert channel or a dead GITHUB_TOKEN matters most —
+    // that combination is what turned the 2026-07-31 detection into a 4-day
+    // silent outage.
     let checks;
     if (!dbCheck.ok) {
-        checks = [dbCheck, await checkSite()];
+        checks = [dbCheck, await checkSite(), await checkAlertChannels(), await checkCredentials()];
     } else {
         checks = [dbCheck, ...await Promise.all([
             checkScheduler(),
@@ -537,6 +664,8 @@ async function main() {
             checkProtectedSources(),
             checkStageFailures(),
             checkLiveFreshness(),
+            checkAlertChannels(),
+            checkCredentials(),
         ])];
     }
 
