@@ -20,12 +20,22 @@ on:
     types: [opened, assigned]
   pull_request_review:
     types: [submitted]
+  # The watchdog's route in. Its issues are created with GITHUB_TOKEN, which
+  # starts no workflow, so watchdog.yml dispatches this one explicitly with the
+  # issue number. Dispatching needs actions:write on this repo, so nobody
+  # outside it can use this trigger.
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: 'Watchdog issue number to investigate and repair'
+        required: true
+        type: number
 
 concurrency:
   # One Claude run per issue/PR. Without this, an issue that gets several comments
   # in a minute starts several agents on the same problem, which race to open
   # duplicate PRs against the same branch name.
-  group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
+  group: claude-${{ github.event.issue.number || github.event.pull_request.number || inputs.issue }}
   cancel-in-progress: false
 
 jobs:
@@ -40,9 +50,16 @@ jobs:
     # Gate 2 (below): author_association == 'OWNER' | 'COLLABORATOR'. Defence in
     # depth — it is evaluated by GitHub before the job starts, so an unauthorised
     # trigger never reaches the action, never starts a runner, and never costs a
-    # token. Note the watchdog opens its issues via GITHUB_TOKEN, which reports
-    # as OWNER on a personal repo, so the self-heal loop still works.
+    # token.
+    #
+    # Watchdog issues do NOT come through these gates. They are opened by
+    # github-actions[bot] (author_association NONE) via GITHUB_TOKEN, which
+    # starts no workflow at all; an earlier comment here claimed it reported as
+    # OWNER, and on that assumption issues #11 to #22 never reached an agent.
+    # They arrive as workflow_dispatch from watchdog.yml instead, which only a
+    # holder of actions:write on this repo can send.
     if: |
+      github.event_name == 'workflow_dispatch' ||
       (
         (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') &&
           (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR')) ||
@@ -69,11 +86,47 @@ jobs:
           # look at last week. fetch-depth 1 makes git log useless.
           fetch-depth: 0
 
+      # Only a dispatched (watchdog) run gets a prompt. On comment and issue
+      # events a non-empty prompt switches the action from tag mode to agent
+      # mode (src/modes/detector.ts), which would change how @claude replies
+      # behave, so for those events this step writes nothing and prompt is ''.
+      - name: Build repair prompt
+        id: repair
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ISSUE: ${{ inputs.issue }}
+        run: |
+          {
+            echo 'text<<PROMPT_EOF'
+            cat <<EOF
+          You are the repair agent for logosia-worker, the ingestion pipeline behind logosia.com.au.
+          The watchdog opened issue #${ISSUE}. Work it to a resolution:
+
+          1. Read AGENTS.md, then the issue: gh issue view ${ISSUE} --comments
+          2. Check whether the condition is still live: gh run list --workflow watchdog.yml --limit 3,
+             then gh run view <id> --log for the newest run.
+             - If every check this issue names now PASSES, comment the evidence and close it:
+               gh issue close ${ISSUE} --comment "<what you checked>". Stop.
+          3. If the cause is infrastructure (database unreachable, disk full, scheduler disabled,
+             a missing or expired secret), comment the diagnosis and what the owner must do.
+             Open NO pull request and leave the issue open.
+          4. If there is a code or data fix: create a branch named claude/issue-${ISSUE}-fix,
+             make the smallest change that fixes it, run npm ci && npm run smoke, commit, push,
+             and open a PR whose body contains "Closes #${ISSUE}" so merging closes the issue.
+             Comment on the issue with the PR link. Never push to main.
+
+          Every rule in AGENTS.md binds you: never touch retention windows, per-stage limits,
+          the USA block, or source policy, and never commit secrets.
+          EOF
+            echo 'PROMPT_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: ${{ steps.repair.outputs.text }}
 
           # ⚠️ MUST STAY false ON THIS PUBLIC REPO.
           #
@@ -103,4 +156,4 @@ jobs:
             actions: read
 
           claude_args: >-
-            --allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue close:*),Bash(gh issue comment:*),Bash(npm ci),Bash(npm run smoke),Bash(npm run watchdog),Bash(npm run scrape),Bash(npm run db:seed-sources),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"
+            --allowed-tools "Bash(gh run view:*),Bash(gh run list:*),Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue close:*),Bash(gh issue comment:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(git checkout:*),Bash(git switch:*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(npm ci),Bash(npm run smoke),Bash(npm run watchdog),Bash(npm run scrape),Bash(npm run db:seed-sources),Bash(node --check:*),Bash(node worker/scripts/smoke.js:*)"

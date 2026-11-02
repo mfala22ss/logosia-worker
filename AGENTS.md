@@ -107,6 +107,13 @@ because such an issue summoned you:
   that will not accept a connection. A PR that cannot fix the problem is worse than
   none: it makes the incident look handled.
 - Verify with `npm run smoke` (no credentials needed) before opening a PR.
+  `smoke.js` sets placeholder credentials itself, so this holds on a runner with no secrets.
+- You get no Supabase credentials, by design. To see live health, read the watchdog's own
+  run logs, which do run with them: `gh run list --workflow watchdog.yml --limit 3`, then
+  `gh run view <id> --log`. Do not ask for the service-role key; on a public repo an agent
+  holding it is one prompt injection away from deleting the database.
+- `workflows_enabled` failing means GitHub disabled a scheduled workflow for inactivity. The
+  watchdog has already re-enabled it. Comment, open no PR.
 - Only `worker/data/*.json` changes are eligible for auto-merge, and only when
   `AUTO_MERGE_ENABLED` is set. Everything else waits for a human. See the
   "Self-maintenance" section of `README.md` for why.

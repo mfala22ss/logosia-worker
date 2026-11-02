@@ -11,6 +11,14 @@
 
 const assert = require('node:assert');
 
+// Placeholders, set here rather than only in ci.yml, so `npm run smoke` works
+// anywhere: the repair agent's runner has no secrets, and before this it died on
+// "[db] Missing SUPABASE_URL" despite AGENTS.md promising smoke needs none.
+// ??= keeps real values when they are present. Nothing here connects; it loads.
+process.env.SUPABASE_URL              ??= 'https://placeholder.supabase.co';
+process.env.SUPABASE_SERVICE_ROLE_KEY ??= 'placeholder';
+process.env.GROQ_KEY                  ??= 'placeholder';
+
 const MODULES = [
     '../index',
     '../scraper',
